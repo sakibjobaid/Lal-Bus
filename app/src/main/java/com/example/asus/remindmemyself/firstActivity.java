@@ -35,8 +35,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-public class firstActivity extends FragmentActivity implements OnMapReadyCallback ,GoogleMap.OnCameraMoveCanceledListener,GoogleMap.OnMarkerClickListener,GoogleMap.OnCameraIdleListener,GoogleMap.OnCameraMoveListener{
+public class firstActivity extends FragmentActivity implements View.OnClickListener,OnMapReadyCallback ,GoogleMap.OnCameraMoveCanceledListener,GoogleMap.OnMarkerClickListener,GoogleMap.OnCameraIdleListener,GoogleMap.OnCameraMoveListener{
 
+    //region variable
     private GoogleMap mMap;
     private boolean locationUpdateState = false, permit = false;
     private LocationCallback locationCallback;
@@ -48,6 +49,7 @@ public class firstActivity extends FragmentActivity implements OnMapReadyCallbac
     private Marker marker;
     private int count=0;
     private ImageView img;
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +60,28 @@ public class firstActivity extends FragmentActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         img= (ImageView) findViewById(R.id.iconid);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                markerPlacing(currentLatLng);
-            }
-        });
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabloc);
+        FloatingActionButton fabt = (FloatingActionButton) findViewById(R.id.fabtraffic);
+
+       fab.setOnClickListener(this);
+       fabt.setOnClickListener(this);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                markerPlacing(currentLatLng);
+//            }
+//        });
+
+
+//        fabt.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(mMap.isTrafficEnabled())
+//                mMap.setTrafficEnabled(false);
+//                else
+//                    mMap.setTrafficEnabled(true);
+//            }
+//        });
 
         locationCallback = new LocationCallback() {
             @Override
@@ -81,6 +98,22 @@ public class firstActivity extends FragmentActivity implements OnMapReadyCallbac
 
 
 
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        if(v.getId()==R.id.fabloc)
+        {
+            markerPlacing(currentLatLng);
+        }
+        if(v.getId()==R.id.fabtraffic)
+        {
+            if(mMap.isTrafficEnabled())
+                mMap.setTrafficEnabled(false);
+                else
+                    mMap.setTrafficEnabled(true);
+        }
     }
 
     private void createLocationRequest() {
@@ -266,4 +299,6 @@ public class firstActivity extends FragmentActivity implements OnMapReadyCallbac
             markerPlacing(mMap.getCameraPosition().target);
         }
     }
+
+
 }
