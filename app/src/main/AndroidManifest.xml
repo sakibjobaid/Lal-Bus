@@ -19,6 +19,7 @@
 
         <activity
             android:name=".firstActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_first">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

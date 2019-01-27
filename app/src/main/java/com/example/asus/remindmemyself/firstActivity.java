@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -15,9 +17,16 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -28,15 +37,23 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 public class firstActivity extends FragmentActivity implements View.OnClickListener, OnMapReadyCallback, GoogleMap.OnCameraMoveCanceledListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener, GoogleMap.OnCameraMoveListener {
 
     private static int interval =0, fastinterval = 0;
+    public StoppageMarkerPosition sp= new StoppageMarkerPosition();
     //region variable
     private GoogleMap mMap;
+    int height,width;
+    public PopupWindow popupWindowDogs;
+    public Button buttonBus,buttonTime;
+    public String popUpBus [] = {"Taranga","Choitali","Ullash","Boishakhi","Choitali","Ullash","Boishakhi"};
+    public String popUpTime [] = {"7:00 am","7:30 am","8:00 am","7:00 am","7:30 am","8:00 am"};
     private boolean locationUpdateState = false, permit = false, locationsettings = false, check = false;
     private LocationCallback locationCallback;
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -72,6 +89,40 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         //endregion
 
 
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        height = displayMetrics.heightPixels;
+        width = displayMetrics.widthPixels;
+
+        // initialize pop up window
+//        popupWindowDogs = popupWindowDogs();
+
+        View.OnClickListener handler = new View.OnClickListener() {
+            public void onClick(View v) {
+
+                switch (v.getId()) {
+
+                    case R.id.busBtn:
+                        // show the list view as dropdown
+                        popupWindowDogs = popupWindowDogs(v);
+                        popupWindowDogs.showAsDropDown(v, -5, 0);
+                        break;
+                    case R.id.timeBtn:
+                        // show the list view as dropdown
+                        popupWindowDogs = popupWindowDogs(v);
+                        popupWindowDogs.showAsDropDown(v, -5, 0);
+                        break;
+                }
+            }
+        };
+
+        // our button
+        buttonBus = (Button) findViewById(R.id.busBtn);
+        buttonTime=(Button)findViewById(R.id.timeBtn);
+        buttonBus.setOnClickListener(handler);
+        buttonTime.setOnClickListener(handler);
+
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -94,6 +145,77 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         createLocationRequest();
 
 
+    }
+
+    public PopupWindow popupWindowDogs(View v) {
+
+        // initialize a pop up window type
+        PopupWindow popupWindow = new PopupWindow(this);
+
+        // the drop down list is a list view
+        ListView listViewDogs = new ListView(this);
+
+        // set our adapter and pass our pop up window contents
+        if(v.getId()==R.id.busBtn)
+        {
+            listViewDogs.setAdapter(dogsAdapter(popUpBus));
+            listViewDogs.setDivider(null);
+        }
+        else if(v.getId()==R.id.timeBtn)
+        {
+            listViewDogs.setAdapter(dogsAdapter(popUpTime));
+            listViewDogs.setDivider(null);
+        }
+
+        // set the item click listener
+        listViewDogs.setOnItemClickListener( new DogsDropdownOnItemClickListener());
+
+        // some other visual settings
+        popupWindow.setFocusable(false);
+        popupWindow.setWidth((int)(width*.45));
+        popupWindow.setHeight((int)(height*.4));
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        //popupWindow.setBackgroundDrawable();
+
+        // set the list view as pop up window content
+        popupWindow.setContentView(listViewDogs);
+
+        return popupWindow;
+    }
+
+    /*
+     * adapter where the list values will be set
+     */
+    private ArrayAdapter<String> dogsAdapter(String dogsArray[]) {
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dogsArray) {
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                // setting the ID and text for every items in the list
+                String item = getItem(position);
+                //String[] itemArr = item.split("::");
+                //String text = itemArr[0];
+                //String id = itemArr[1];
+
+                // visual settings for the list item
+                TextView listItem = new TextView(firstActivity.this);
+
+                listItem.setText(item);
+                //listItem.setTag(id);
+                listItem.setHeight(150);
+                listItem.setMinHeight(150);
+                listItem.setTextSize(20);
+                listItem.setPadding(10, 10, 10, 10);
+                listItem.setTextColor(Color.BLACK);
+
+                return listItem;
+            }
+        };
+
+        return adapter;
     }
 
     @Override
@@ -319,6 +441,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         mMap.setOnCameraIdleListener(this);
         mMap.setOnCameraMoveListener(this);
         mMap.setOnCameraMoveCanceledListener(this);
+        mMap.setPadding(0,150,0,0);
         setUpMap();
 
     }
@@ -384,6 +507,20 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         }
         if (v.getId() == R.id.fabtraffic) {
 
+            for(int i=0;i<sp.TarangaLat.length;i++)
+            {
+                MarkerOptions mk = new MarkerOptions();
+                mk.draggable(false);
+                mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                marker = mMap.addMarker(mk
+                        .position(new LatLng(sp.TarangaLat[i],sp.TarangaLon[i]))
+                        .title(sp.TarangaStopName[i]));
+
+                marker.showInfoWindow();
+            }
+
+
+            //marker.setSnippet("hello");
             if (mMap.isTrafficEnabled())
                 mMap.setTrafficEnabled(false);
             else

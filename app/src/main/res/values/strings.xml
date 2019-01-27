@@ -1,4 +1,23 @@
 <resources>
     <string name="app_name">RemindMeMyself</string>
     <string name="title_activity_first">MapMyself</string>
+    <string name="bus">BUS</string>
+    <string name="time">TIME</string>
+
+    <string-array name="BUS">
+        <item>BUS</item>
+        <item>Taranga</item>
+        <item>Choitali</item>
+        <item>Ullash</item>
+        <item>Boishakhi</item>
+
+    </string-array>
+
+    <string-array name="TIME">
+        <item>TIME</item>
+        <item>7:00 am</item>
+        <item>7:30 am</item>
+        <item>8:30 am</item>
+        <item>10:00 am</item>
+    </string-array>
 </resources>
