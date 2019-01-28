@@ -17,8 +17,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -47,6 +49,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
     private static int interval =0, fastinterval = 0;
     public StoppageMarkerPosition sp= new StoppageMarkerPosition();
+    private DrawerLayout drawer;
     //region variable
     private GoogleMap mMap;
     int height,width;
@@ -83,9 +86,11 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         Log.d("sima", "onCreate");
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabloc);
         FloatingActionButton fabt = (FloatingActionButton) findViewById(R.id.fabtraffic);
+        FloatingActionButton fabn=(FloatingActionButton)findViewById(R.id.fabnavigation);
 
         fab.setOnClickListener(this);
         fabt.setOnClickListener(this);
+        fabn.setOnClickListener(this);
         //endregion
 
 
@@ -94,6 +99,8 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         height = displayMetrics.heightPixels;
         width = displayMetrics.widthPixels;
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         // initialize pop up window
 //        popupWindowDogs = popupWindowDogs();
@@ -442,6 +449,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         mMap.setOnCameraMoveListener(this);
         mMap.setOnCameraMoveCanceledListener(this);
         mMap.setPadding(0,150,0,0);
+        mMap.getUiSettings().setRotateGesturesEnabled(false);
         setUpMap();
 
     }
@@ -507,6 +515,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         }
         if (v.getId() == R.id.fabtraffic) {
 
+
             for(int i=0;i<sp.TarangaLat.length;i++)
             {
                 MarkerOptions mk = new MarkerOptions();
@@ -525,6 +534,12 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
                 mMap.setTrafficEnabled(false);
             else
                 mMap.setTrafficEnabled(true);
+        }
+        if(v.getId()==R.id.fabnavigation)
+        {
+
+
+            drawer.openDrawer(Gravity.LEFT);
         }
     }
 

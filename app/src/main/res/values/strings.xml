@@ -3,6 +3,9 @@
     <string name="title_activity_first">MapMyself</string>
     <string name="bus">BUS</string>
     <string name="time">TIME</string>
+    <string name="profile">Profile</string>
+    <string name="settings">Settings</string>
+    <string name="log_out">Log out</string>
 
     <string-array name="BUS">
         <item>BUS</item>
