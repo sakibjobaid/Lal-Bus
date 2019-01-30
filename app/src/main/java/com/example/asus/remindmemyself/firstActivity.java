@@ -10,6 +10,10 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -83,14 +87,26 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         img = (ImageView) findViewById(R.id.iconid);
-        Log.d("sima", "onCreate");
+        Log.d("sakib", "onCreate");
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabloc);
         FloatingActionButton fabt = (FloatingActionButton) findViewById(R.id.fabtraffic);
         FloatingActionButton fabn=(FloatingActionButton)findViewById(R.id.fabnavigation);
+        ConnectivityManager cm =
+                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        fab.setOnClickListener(this);
-        fabt.setOnClickListener(this);
-        fabn.setOnClickListener(this);
+       if(!isNetworkConnected(this))
+       {
+           networkAlert(this);
+       }
+
+
+           fab.setOnClickListener(this);
+           fabt.setOnClickListener(this);
+           fabn.setOnClickListener(this);
+
+
+
+
         //endregion
 
 
@@ -136,7 +152,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
                 super.onLocationResult(locationResult);
                 lastlocation = locationResult.getLastLocation();
                 currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
-                Log.d("sima", "callback");
+                Log.d("sakib", "callback");
                 if(flag)
                 {
                     flag=false;
@@ -152,6 +168,57 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         createLocationRequest();
 
 
+    }
+
+    private void networkAlert(firstActivity firstActivity) {
+
+        Log.d("sakib", "networkalert");
+        final Context context = firstActivity.this;
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setMessage(R.string.network_msg);
+        dialog.setTitle(R.string.network_unavailable);
+        dialog.setPositiveButton("Network settings", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                check = true;
+                Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                context.startActivity(intent);
+            }
+        });
+        alert = dialog.create();
+        alert.show();
+
+    }
+
+    public static boolean isNetworkConnected(Context context) {
+        boolean result = false;
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (cm != null) {
+                NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
+                if (capabilities != null) {
+                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                        result = true;
+                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                        result = true;
+                    }
+                }
+            }
+        } else {
+            if (cm != null) {
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                if (activeNetwork != null) {
+                    // connected to the internet
+                    if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                        result = true;
+                    } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
+                        result = true;
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     public PopupWindow popupWindowDogs(View v) {
@@ -228,7 +295,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("sima", "onStart");
+        Log.d("sakib", "onStart");
     }
 
     @Override
@@ -236,10 +303,10 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         super.onResume();
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        Log.d("sima", "onResume");
+        Log.d("sakib", "onResume");
 
         if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Log.d("sima", "b4 locationupdate");
+            Log.d("sakib", "b4 locationupdate");
             startLocationUpdates();
         } else
             alertMethod();
@@ -250,7 +317,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("sima", "onPause");
+        Log.d("sakib", "onPause");
 
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
@@ -267,9 +334,9 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
                             @Override
                             public void onSuccess(Location location) {
 
-                                Log.d("sima", "onSuccess");
+                                Log.d("sakib", "onSuccess");
                                 if (location != null) {
-                                    Log.d("sima", "setup deep success");
+                                    Log.d("sakib", "setup deep success");
                                     lastlocation = location;
                                     LatLng currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
                                     markerPlacing(currentLatLng);
@@ -284,7 +351,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     }
 
     private void createLocationRequest() {
-        Log.d("sima", "createlocation");
+        Log.d("sakib", "createlocation");
 
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -297,7 +364,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 //        }
 //        else
 //        {
-//            Log.d("sima","alertdialog");
+//            Log.d("sakib","alertdialog");
 //            final Context context= firstActivity.this;
 //            String msg="Please enable your GPS/Location Service";
 //            AlertDialog.Builder dialog = new AlertDialog.Builder(context);
@@ -326,7 +393,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 //            @Override
 //            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
 //
-//                 Log.d("sima","task success");
+//                 Log.d("sakib","task success");
 //                locationUpdateState = true;
 //                locationsettings=true;
 //                startLocationUpdates();
@@ -338,24 +405,24 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 ////            @Override
 ////            public void onFailure(@NonNull Exception e) {
 ////
-////                Log.d("sima","failure");
+////                Log.d("sakib","failure");
 ////
 ////                if (e instanceof ResolvableApiException) {
 ////                    // Location settings are not satisfied, but this can be fixed
 ////                    // by showing the user a dialog.
-////                    Log.d("sima","resolvable failure");
+////                    Log.d("sakib","resolvable failure");
 ////
 ////
 ////                    try {
 ////                        // Show the dialog by calling startResolutionForResult(),
 ////                        // and check the result in onActivityResult().
-////                        Log.d("sima","try failure");
+////                        Log.d("sakib","try failure");
 ////
 ////                        ResolvableApiException resolvable = (ResolvableApiException) e;
 ////                        resolvable.startResolutionForResult(firstActivity.this,
 ////                                2);
 ////                    } catch (IntentSender.SendIntentException sendEx) {
-////                        Log.d("sima","catched failure");
+////                        Log.d("sakib","catched failure");
 ////
 ////                        // Ignore the error.
 ////                    }
@@ -371,12 +438,12 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 //    final Context context= firstActivity.this;
 //    switch (statusCode) {
 //        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-//           Log.w("sima", "Location settings not satisfied, attempting resolution intent");
+//           Log.w("sakib", "Location settings not satisfied, attempting resolution intent");
 ////            try {
 ////                ResolvableApiException resolvable = (ResolvableApiException) e;
 ////                resolvable.startResolutionForResult(firstActivity.this,2);
 ////            } catch (IntentSender.SendIntentException sendIntentException) {
-////                Log.e("sima", "Unable to start resolution intent");
+////                Log.e("sakib", "Unable to start resolution intent");
 ////            }
 //            String msg="Please enable your GPS/Location Service";
 //            AlertDialog.Builder dialog = new AlertDialog.Builder(context);
@@ -401,7 +468,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 ////            });
 //            break;
 //        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-//            Log.w("sima", "Location settings not satisfied and can't be changed");
+//            Log.w("sakib", "Location settings not satisfied and can't be changed");
 //            break;
 //    }
 //}
@@ -415,14 +482,14 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         }
 
-        Log.d("sima", "startLocationUpdate");
+        Log.d("sakib", "startLocationUpdate");
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        Log.d("sima", "onRequest");
+        Log.d("sakib", "onRequest");
         if (requestCode == 123 && grantResults.length > 0) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setUpMap();
@@ -442,7 +509,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        Log.d("sima", "onMapReady");
+        Log.d("sakib", "onMapReady");
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
         mMap.setOnCameraIdleListener(this);
@@ -460,7 +527,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         }
         else {
-            Log.d("sima", "setup success");
+            Log.d("sakib", "setup success");
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -470,9 +537,9 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
                         @Override
                         public void onSuccess(Location location) {
 
-                            Log.d("sima", "onSuccess");
+                            Log.d("sakib", "onSuccess");
                             if (location != null) {
-                                Log.d("sima", "setup deep success");
+                                Log.d("sakib", "setup deep success");
                                 lastlocation = location;
                                 LatLng currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
                                 markerPlacing(currentLatLng);
@@ -488,11 +555,11 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
     private void alertMethod() {
 
-        Log.d("sima", "alertdialog");
+        Log.d("sakib", "alertdialog");
         final Context context = firstActivity.this;
-        String msg = "Please enable your GPS/Location Service and High Accuracy as location method";
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setMessage(msg);
+        dialog.setTitle(R.string.GPS_unavailable);
+        dialog.setMessage(R.string.GPS_msg);
 
         dialog.setPositiveButton("GPS settings", new DialogInterface.OnClickListener() {
             @Override
@@ -564,7 +631,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 //        marker.showInfoWindow();
 
         //marker.setSnippet("hello");
-        Log.d("sima", "markerPlacing");
+        Log.d("sakib", "markerPlacing");
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));
 
 
@@ -585,14 +652,14 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     public void onCameraIdle() {
         //currentLatLng=mMap.getCameraPosition().target;
         img.setVisibility(View.VISIBLE);
-        Log.d("sima", "idle");
+        Log.d("sakib", "idle");
         aftercameramove = mMap.getCameraPosition().target;
     }
 
     @Override
     public void onCameraMove() {
 
-        Log.d("sima", "move");
+        Log.d("sakib", "move");
         img.setVisibility(View.VISIBLE);
         /// to remove previous marker due to continuos calling of the markerplacing
 
@@ -603,9 +670,9 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     @Override
     public void onCameraMoveCanceled() {
 
-        Log.d("sima", "ouside sb");
+        Log.d("sakib", "ouside sb");
         if (flag) {
-            Log.d("sima", "sb");
+            Log.d("sakib", "sb");
             //flag=false;
             markerPlacing(mMap.getCameraPosition().target);
         }
