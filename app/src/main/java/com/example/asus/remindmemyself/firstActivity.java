@@ -47,13 +47,25 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 public class firstActivity extends FragmentActivity implements View.OnClickListener, OnMapReadyCallback, GoogleMap.OnCameraMoveCanceledListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener, GoogleMap.OnCameraMoveListener {
 
-    private static int interval =0, fastinterval = 0;
+    private static int interval =8000, fastinterval = 2000;
     public StoppageMarkerPosition sp= new StoppageMarkerPosition();
     private DrawerLayout drawer;
+    private int countMarker=0;
     //region variable
     private GoogleMap mMap;
     int height,width;
@@ -67,13 +79,16 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     private LocationRequest locationRequest;
     private Location lastlocation;
     private LatLng currentLatLng = null, aftercameramove;
-    private boolean flag = true;
+    private boolean flag = true,admin=false,user=false,finalLocation=false;
     private Marker marker;
+    private HashMap<String, Marker> mMarkers = new HashMap<>();
     private int count = 0, call = 0;
     private ImageView img;
     private LocationManager lm;
     private AlertDialog.Builder dialog;
     private AlertDialog alert;
+
+
 
     //endregion
 
@@ -109,8 +124,16 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
         //endregion
 
+    if((getIntent().getStringExtra("name")).equals("admin"))
+        admin=true;
+    if((getIntent().getStringExtra("name")).equals("user"))
+        user=true;
 
 
+        if(admin)
+        adminloginToFirebase();
+        if(user)
+            userloginToFirebase();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         height = displayMetrics.heightPixels;
@@ -150,24 +173,187 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("AdminLocation");
+
                 lastlocation = locationResult.getLastLocation();
-                currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
+//                if(finalLocation)
+//                currentLatLng = new LatLng(aftercameramove.latitude, aftercameramove.longitude);
+//                else
+                    currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
+
                 Log.d("sakib", "callback");
-                if(flag)
+                if(admin)
                 {
-                    flag=false;
-                    markerPlacing(currentLatLng);
+                    if(finalLocation)
+                    {
+                        AdminLocation al= new AdminLocation(aftercameramove.latitude,aftercameramove.longitude);
+                        Log.d("sakib", "callback2");
+                        ref.setValue(al);
+                    }
+                    else
+                    {
+                        AdminLocation al= new AdminLocation(lastlocation.getLatitude(),lastlocation.getLongitude());
+                        Log.d("sakib", "callback2");
+                        ref.setValue(al);
+                    }
+
+                    //ref.child("latitude").setValue(lastlocation.getLatitude());
+                    //ref.child("longitude").setValue(lastlocation.getLongitude());
 
                 }
+                if(user)
+                {
+
+                    Log.d("sakib","inside user");
+                    ref.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(countMarker>0)
+                                marker.remove();
+                            setMarker(dataSnapshot);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                }
+//                if(flag)
+//                {
+//                    flag=false;
+//                    markerPlacing(currentLatLng);
+//
+//
+//                }
 
                 //marker.remove();
-
             }
         };
 
         createLocationRequest();
 
 
+    }
+
+    private void setMarker(DataSnapshot dataSnapshot) {
+        // When a location update is received, put or update
+        // its value in mMarkers, which contains all the markers
+        // for locations received, so that we can build the
+        // boundaries required to show them all on the map at once
+//        String key = dataSnapshot.getKey();
+       // HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
+
+        Log.d("sakib","inside setMarker");
+
+        double  lat,lng;
+        LatLng la;
+
+        countMarker++;
+        lat= (double) dataSnapshot.child("latitude").getValue();
+        lng = (double) dataSnapshot.child("longitude").getValue();
+        la = new LatLng(lat, lng);
+        //marker.remove();
+        MarkerOptions mk = new MarkerOptions();
+        mk.draggable(false);
+        mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        marker = mMap.addMarker(mk
+                .position(la));
+
+//        for(DataSnapshot ds: dataSnapshot.getChildren())
+//        {
+//            Log.d("sakib","analogy");
+//            AdminLocation ad= ds.getValue(AdminLocation.class);
+//            lat=ad.getLatitude();
+//            lng=ad.getLongitude();
+//            la= new LatLng(lat,lng);
+//            marker.remove();
+//            MarkerOptions mk = new MarkerOptions();
+//            mk.draggable(false);
+//            mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+//            marker = mMap.addMarker(mk
+//                    .position(la));
+//            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(la, 15f));
+//
+//
+//
+//        }
+
+//        if(dataSnapshot.getValue()!=null)
+//        {
+//
+////            lat= (Double) dataSnapshot.child("latitude").getValue();
+////            lng=(Double) dataSnapshot.child("longitude").getValue();
+////            la= new LatLng(lat,lng);
+//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(la, 15f));
+//
+//        }
+
+//        else
+//        {
+//            Log.d("sakib","value is null");
+//        }
+
+
+
+
+
+
+
+
+
+
+
+//        if (!mMarkers.containsKey(key)) {
+//            mMarkers.put(key, mMap.addMarker(new MarkerOptions().title(key).position(location)));
+//        } else {
+//            mMarkers.get(key).setPosition(location);
+//        }
+//        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+//        for (Marker marker : mMarkers.values()) {
+//            builder.include(marker.getPosition());
+//        }
+        //
+
+    }
+
+    private void adminloginToFirebase() {
+        // Authenticate with Firebase, and request location updates
+        String email = "test123@gmail.com";
+        String password = "test123";
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(
+                email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>(){
+            @Override
+            public void onComplete(Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Log.d("sakib", "firebase auth success");
+                    createLocationRequest();
+                } else {
+                    Log.d("sakib", "firebase auth failed");
+                }
+            }
+        });
+    }
+
+    private void userloginToFirebase() {
+        String email = "test123@gmail.com";
+        String password ="test123" ;
+        // Authenticate with Firebase and subscribe to updates
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(
+                email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    subscribeToUpdates();
+                    Log.d("sakib", "firebase auth success");
+                } else {
+                    Log.d("sakib", "firebase auth failed");
+                }
+            }
+        });
+    }
+
+    private void subscribeToUpdates() {
+        // Functionality coming next step
     }
 
     private void networkAlert(firstActivity firstActivity) {
@@ -598,9 +784,17 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
             //marker.setSnippet("hello");
             if (mMap.isTrafficEnabled())
+            {
                 mMap.setTrafficEnabled(false);
+                Log.d("para","disabled");
+
+            }
             else
+            {
                 mMap.setTrafficEnabled(true);
+                Log.d("para","enabled");
+
+            }
         }
         if(v.getId()==R.id.fabnavigation)
         {
@@ -653,7 +847,9 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         //currentLatLng=mMap.getCameraPosition().target;
         img.setVisibility(View.VISIBLE);
         Log.d("sakib", "idle");
+
         aftercameramove = mMap.getCameraPosition().target;
+        finalLocation=true;
     }
 
     @Override
