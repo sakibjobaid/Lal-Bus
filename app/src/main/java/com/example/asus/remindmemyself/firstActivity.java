@@ -198,6 +198,9 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("AdminLocation");
 
                 lastlocation = locationResult.getLastLocation();
+                ((GlobalClass)firstActivity.this.getApplication()).lat=lastlocation.getLatitude();
+                ((GlobalClass)firstActivity.this.getApplication()).lon=lastlocation.getLongitude();
+
 
                 //Toast.makeText(firstActivity.this,lastlocation.toString(),Toast.LENGTH_LONG).show();
 //                if(finalLocation)

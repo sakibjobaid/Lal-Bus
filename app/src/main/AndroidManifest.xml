@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
+        android:name=".GlobalClass"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -31,7 +32,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GeofenceSettings1"></activity>
+        <activity android:name=".GeofenceSettings1"  android:parentActivityName=".StartActiviy"/>
+
+        <service
+            android:name=".GeofenceTransitionsIntentService"
+
+            android:exported="false">
+
+        </service>
     </application>
 
 </manifest>
