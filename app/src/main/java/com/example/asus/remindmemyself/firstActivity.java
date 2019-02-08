@@ -23,6 +23,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -261,18 +262,18 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
     }
 
-//    @Override
-//    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//
-//        Log.d("sakib","navigation");
-//        int id = item.getItemId();
-//        Intent intent = null;
-//
-//        switch (id) {
-//            case R.id.nav_busGeofence:
-//                intent = new Intent(this,ProfileActivity.class);
-//                startActivity(intent);
-//                break;
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        Log.d("sakib","navigation");
+        int id = item.getItemId();
+        Intent intent = null;
+
+        switch (id) {
+            case R.id.nav_busGeofence:
+                intent = new Intent(this,GeofenceSettings1.class);
+                startActivity(intent);
+                break;
 //            case R.id.nav_settings:
 //                intent = new Intent(this, ProfileActivity.class);
 //                startActivity(intent);
@@ -300,13 +301,12 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 //
 //
 //                break;
-//
-//
-//        }
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        drawer.closeDrawer(GravityCompat.START);
-//        return true;
-//    }
+
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 
     private void setMarker(DataSnapshot dataSnapshot) {
         // When a location update is received, put or update
@@ -948,8 +948,5 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     }
 
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        return false;
-    }
+
 }
