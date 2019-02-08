@@ -15,9 +15,11 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.HandlerThread;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -25,6 +27,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -60,13 +63,17 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
-public class firstActivity extends FragmentActivity implements View.OnClickListener, OnMapReadyCallback, GoogleMap.OnCameraMoveCanceledListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener, GoogleMap.OnCameraMoveListener {
+public class firstActivity extends FragmentActivity implements View.OnClickListener,
+        OnMapReadyCallback, GoogleMap.OnCameraMoveCanceledListener,
+        GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener,
+        GoogleMap.OnCameraMoveListener ,
+        NavigationView.OnNavigationItemSelectedListener{
 
-    private static int interval =8000, fastinterval = 2000;
+    //region variable
+    private static int interval =5000, fastinterval = 2000;
     public StoppageMarkerPosition sp= new StoppageMarkerPosition();
     private DrawerLayout drawer;
     private int countMarker=0;
-    //region variable
     private GoogleMap mMap;
     int height,width;
     public PopupWindow popupWindowDogs;
@@ -78,6 +85,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
     private Location lastlocation;
+    final HandlerThread handlerThread= new HandlerThread("RequestLocation");;
     private LatLng currentLatLng = null, aftercameramove;
     private boolean flag = true,admin=false,user=false,finalLocation=false;
     private Marker marker;
@@ -102,7 +110,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         img = (ImageView) findViewById(R.id.iconid);
-        Log.d("sakib", "onCreate");
+        Log.d("jobaid", "onCreate");
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabloc);
         FloatingActionButton fabt = (FloatingActionButton) findViewById(R.id.fabtraffic);
         FloatingActionButton fabn=(FloatingActionButton)findViewById(R.id.fabnavigation);
@@ -131,15 +139,25 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
 
         if(admin)
-        adminloginToFirebase();
+        {
+            Log.d("jobaid","admintrue");
+            adminloginToFirebase();
+
+        }
         if(user)
+        {
             userloginToFirebase();
+
+        }
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         height = displayMetrics.heightPixels;
         width = displayMetrics.widthPixels;
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener((NavigationView.OnNavigationItemSelectedListener) this);
 
         // initialize pop up window
 //        popupWindowDogs = popupWindowDogs();
@@ -169,6 +187,9 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         buttonBus.setOnClickListener(handler);
         buttonTime.setOnClickListener(handler);
 
+
+        handlerThread.start();
+
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -176,24 +197,29 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("AdminLocation");
 
                 lastlocation = locationResult.getLastLocation();
+
+                //Toast.makeText(firstActivity.this,lastlocation.toString(),Toast.LENGTH_LONG).show();
 //                if(finalLocation)
 //                currentLatLng = new LatLng(aftercameramove.latitude, aftercameramove.longitude);
 //                else
                     currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
 
-                Log.d("sakib", "callback");
+                Log.d("jobaid", "callback");
                 if(admin)
                 {
+                    Log.d("jobaid","b4callback");
                     if(finalLocation)
                     {
-                        AdminLocation al= new AdminLocation(aftercameramove.latitude,aftercameramove.longitude);
-                        Log.d("sakib", "callback2");
+                        /// location by camere movement
+                        //AdminLocation al= new AdminLocation(aftercameramove.latitude,aftercameramove.longitude);
+                        AdminLocation al= new AdminLocation(lastlocation.getLatitude(), lastlocation.getLongitude());
+                        Log.d("jobaid", "callback2");
                         ref.setValue(al);
                     }
                     else
                     {
                         AdminLocation al= new AdminLocation(lastlocation.getLatitude(),lastlocation.getLongitude());
-                        Log.d("sakib", "callback2");
+                        Log.d("jobaid", "callback2");
                         ref.setValue(al);
                     }
 
@@ -204,7 +230,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
                 if(user)
                 {
 
-                    Log.d("sakib","inside user");
+                    Log.d("jobaid","inside user");
                     ref.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -235,6 +261,53 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
     }
 
+//    @Override
+//    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//
+//        Log.d("sakib","navigation");
+//        int id = item.getItemId();
+//        Intent intent = null;
+//
+//        switch (id) {
+//            case R.id.nav_busGeofence:
+//                intent = new Intent(this,ProfileActivity.class);
+//                startActivity(intent);
+//                break;
+//            case R.id.nav_settings:
+//                intent = new Intent(this, ProfileActivity.class);
+//                startActivity(intent);
+//                break;
+//            case R.id.nav_logout:
+//                AlertDialog.Builder  builder= new AlertDialog.Builder(home_page.this);
+//                builder.setIcon(R.drawable.logout);
+//                builder.setMessage("Do you want to logout?");
+//                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        finishAffinity();
+//                        System.exit(0);
+//                    }
+//                });
+//                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                });
+//                AlertDialog alert= builder.create();
+//
+//                alert.show();
+//
+//
+//                break;
+//
+//
+//        }
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
+
     private void setMarker(DataSnapshot dataSnapshot) {
         // When a location update is received, put or update
         // its value in mMarkers, which contains all the markers
@@ -243,7 +316,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 //        String key = dataSnapshot.getKey();
        // HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
 
-        Log.d("sakib","inside setMarker");
+        Log.d("jobaid","inside setMarker");
 
         double  lat,lng;
         LatLng la;
@@ -261,7 +334,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
 //        for(DataSnapshot ds: dataSnapshot.getChildren())
 //        {
-//            Log.d("sakib","analogy");
+//            Log.d("jobaid","analogy");
 //            AdminLocation ad= ds.getValue(AdminLocation.class);
 //            lat=ad.getLatitude();
 //            lng=ad.getLongitude();
@@ -290,7 +363,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
 //        else
 //        {
-//            Log.d("sakib","value is null");
+//            Log.d("jobaid","value is null");
 //        }
 
 
@@ -325,10 +398,10 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
             @Override
             public void onComplete(Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Log.d("sakib", "firebase auth success");
+                    Log.d("jobaid", "firebase auth success");
                     createLocationRequest();
                 } else {
-                    Log.d("sakib", "firebase auth failed");
+                    Log.d("jobaid", "firebase auth failed");
                 }
             }
         });
@@ -344,9 +417,9 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
             public void onComplete(Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     subscribeToUpdates();
-                    Log.d("sakib", "firebase auth success");
+                    Log.d("jobaid", "firebase auth success");
                 } else {
-                    Log.d("sakib", "firebase auth failed");
+                    Log.d("jobaid", "firebase auth failed");
                 }
             }
         });
@@ -358,7 +431,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
     private void networkAlert(firstActivity firstActivity) {
 
-        Log.d("sakib", "networkalert");
+        Log.d("jobaid", "networkalert");
         final Context context = firstActivity.this;
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setMessage(R.string.network_msg);
@@ -481,7 +554,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("sakib", "onStart");
+        Log.d("jobaid", "onStart");
     }
 
     @Override
@@ -489,10 +562,10 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         super.onResume();
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        Log.d("sakib", "onResume");
+        Log.d("jobaid", "onResume");
 
         if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Log.d("sakib", "b4 locationupdate");
+            Log.d("jobaid", "b4 locationupdate");
             startLocationUpdates();
         } else
             alertMethod();
@@ -503,7 +576,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("sakib", "onPause");
+        Log.d("jobaid", "onPause");
 
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
@@ -520,9 +593,9 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
                             @Override
                             public void onSuccess(Location location) {
 
-                                Log.d("sakib", "onSuccess");
+                                Log.d("jobaid", "onSuccess");
                                 if (location != null) {
-                                    Log.d("sakib", "setup deep success");
+                                    Log.d("jobaid", "setup deep success");
                                     lastlocation = location;
                                     LatLng currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
                                     markerPlacing(currentLatLng);
@@ -537,7 +610,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     }
 
     private void createLocationRequest() {
-        Log.d("sakib", "createlocation");
+        Log.d("jobaid", "createlocation");
 
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -550,7 +623,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 //        }
 //        else
 //        {
-//            Log.d("sakib","alertdialog");
+//            Log.d("jobaid","alertdialog");
 //            final Context context= firstActivity.this;
 //            String msg="Please enable your GPS/Location Service";
 //            AlertDialog.Builder dialog = new AlertDialog.Builder(context);
@@ -579,7 +652,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 //            @Override
 //            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
 //
-//                 Log.d("sakib","task success");
+//                 Log.d("jobaid","task success");
 //                locationUpdateState = true;
 //                locationsettings=true;
 //                startLocationUpdates();
@@ -591,24 +664,24 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 ////            @Override
 ////            public void onFailure(@NonNull Exception e) {
 ////
-////                Log.d("sakib","failure");
+////                Log.d("jobaid","failure");
 ////
 ////                if (e instanceof ResolvableApiException) {
 ////                    // Location settings are not satisfied, but this can be fixed
 ////                    // by showing the user a dialog.
-////                    Log.d("sakib","resolvable failure");
+////                    Log.d("jobaid","resolvable failure");
 ////
 ////
 ////                    try {
 ////                        // Show the dialog by calling startResolutionForResult(),
 ////                        // and check the result in onActivityResult().
-////                        Log.d("sakib","try failure");
+////                        Log.d("jobaid","try failure");
 ////
 ////                        ResolvableApiException resolvable = (ResolvableApiException) e;
 ////                        resolvable.startResolutionForResult(firstActivity.this,
 ////                                2);
 ////                    } catch (IntentSender.SendIntentException sendEx) {
-////                        Log.d("sakib","catched failure");
+////                        Log.d("jobaid","catched failure");
 ////
 ////                        // Ignore the error.
 ////                    }
@@ -624,12 +697,12 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 //    final Context context= firstActivity.this;
 //    switch (statusCode) {
 //        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-//           Log.w("sakib", "Location settings not satisfied, attempting resolution intent");
+//           Log.w("jobaid", "Location settings not satisfied, attempting resolution intent");
 ////            try {
 ////                ResolvableApiException resolvable = (ResolvableApiException) e;
 ////                resolvable.startResolutionForResult(firstActivity.this,2);
 ////            } catch (IntentSender.SendIntentException sendIntentException) {
-////                Log.e("sakib", "Unable to start resolution intent");
+////                Log.e("jobaid", "Unable to start resolution intent");
 ////            }
 //            String msg="Please enable your GPS/Location Service";
 //            AlertDialog.Builder dialog = new AlertDialog.Builder(context);
@@ -654,7 +727,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 ////            });
 //            break;
 //        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-//            Log.w("sakib", "Location settings not satisfied and can't be changed");
+//            Log.w("jobaid", "Location settings not satisfied and can't be changed");
 //            break;
 //    }
 //}
@@ -668,14 +741,14 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         }
 
-        Log.d("sakib", "startLocationUpdate");
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+        Log.d("jobaid", "startLocationUpdate");
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, handlerThread.getLooper());
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        Log.d("sakib", "onRequest");
+        Log.d("jobaid", "onRequest");
         if (requestCode == 123 && grantResults.length > 0) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setUpMap();
@@ -695,7 +768,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        Log.d("sakib", "onMapReady");
+        Log.d("jobaid", "onMapReady");
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
         mMap.setOnCameraIdleListener(this);
@@ -713,7 +786,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         }
         else {
-            Log.d("sakib", "setup success");
+            Log.d("jobaid", "setup success");
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -723,9 +796,9 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
                         @Override
                         public void onSuccess(Location location) {
 
-                            Log.d("sakib", "onSuccess");
+                            Log.d("jobaid", "onSuccess");
                             if (location != null) {
-                                Log.d("sakib", "setup deep success");
+                                Log.d("jobaid", "setup deep success");
                                 lastlocation = location;
                                 LatLng currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
                                 markerPlacing(currentLatLng);
@@ -741,7 +814,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
     private void alertMethod() {
 
-        Log.d("sakib", "alertdialog");
+        Log.d("jobaid", "alertdialog");
         final Context context = firstActivity.this;
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle(R.string.GPS_unavailable);
@@ -820,12 +893,12 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 //
 //         marker = mMap.addMarker(mk
 //                .position(currentLatLng)
-//                .title("sakib"));
+//                .title("jobaid"));
 //
 //        marker.showInfoWindow();
 
         //marker.setSnippet("hello");
-        Log.d("sakib", "markerPlacing");
+        Log.d("jobaid", "markerPlacing");
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));
 
 
@@ -846,7 +919,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     public void onCameraIdle() {
         //currentLatLng=mMap.getCameraPosition().target;
         img.setVisibility(View.VISIBLE);
-        Log.d("sakib", "idle");
+        Log.d("jobaid", "idle");
 
         aftercameramove = mMap.getCameraPosition().target;
         finalLocation=true;
@@ -855,7 +928,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     @Override
     public void onCameraMove() {
 
-        Log.d("sakib", "move");
+        Log.d("jobaid", "move");
         img.setVisibility(View.VISIBLE);
         /// to remove previous marker due to continuos calling of the markerplacing
 
@@ -866,13 +939,17 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     @Override
     public void onCameraMoveCanceled() {
 
-        Log.d("sakib", "ouside sb");
+        Log.d("jobaid", "ouside sb");
         if (flag) {
-            Log.d("sakib", "sb");
+            Log.d("jobaid", "sb");
             //flag=false;
             markerPlacing(mMap.getCameraPosition().target);
         }
     }
 
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        return false;
+    }
 }

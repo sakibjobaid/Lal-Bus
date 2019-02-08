@@ -21,10 +21,10 @@
         <activity
             android:name=".firstActivity"
             android:label="@string/title_activity_first"
-            android:screenOrientation="portrait">
-
-        </activity>
-        <activity android:name=".StartActiviy" android:label="StartPage">
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".StartActiviy"
+            android:label="StartPage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
