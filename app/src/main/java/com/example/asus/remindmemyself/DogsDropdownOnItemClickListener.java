@@ -12,6 +12,7 @@ import android.widget.TextView;
 public class DogsDropdownOnItemClickListener implements OnItemClickListener {
 
 
+
     @Override
     public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
 
@@ -30,12 +31,25 @@ public class DogsDropdownOnItemClickListener implements OnItemClickListener {
 
         // get the text and set it as the button text
         String selectedItemText = ((TextView) v).getText().toString();
+        //setBusName(selectedItemText);
         if(selectedItemText.contains(":"))
             mainActivity.buttonTime.setText(selectedItemText);
-        else
-        mainActivity.buttonBus.setText(selectedItemText);
 
+        else
+        {
+            GlobalClass.BusName=selectedItemText;
+            mainActivity.buttonBus.setText(selectedItemText);
+            mainActivity.buttonTime.setText("TIME");
+
+        }
 
     }
-
+//
+//    public String getBusName() {
+//        return BusName;
+//    }
+//
+//    public void setBusName(String busName) {
+//        BusName = busName;
+//    }
 }

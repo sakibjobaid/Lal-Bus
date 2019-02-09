@@ -79,8 +79,8 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     int height,width;
     public PopupWindow popupWindowDogs;
     public Button buttonBus,buttonTime;
-    public String popUpBus [] = {"Taranga","Choitali","Ullash","Boishakhi","Choitali","Ullash","Boishakhi"};
-    public String popUpTime [] = {"7:00 am","7:30 am","8:00 am","7:00 am","7:30 am","8:00 am"};
+    public String popUpBus [] = {"Anando","Baishakhi","Boshonto","Chittagong Road","Choitaly","Falguni","Hemonto","Ishakha","Kinchit","Khonika","Moitree/null","Srabon","Taranga","Ullash","Wari"};
+    //public String popUpTime [] = {"7:00 am","7:30 am","8:00 am","7:00 am","7:30 am","8:00 am"};
     private boolean locationUpdateState = false, permit = false, locationsettings = false, check = false;
     private LocationCallback locationCallback;
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -96,6 +96,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     private LocationManager lm;
     private AlertDialog.Builder dialog;
     private AlertDialog alert;
+    DogsDropdownOnItemClickListener d= new DogsDropdownOnItemClickListener();
 
 
 
@@ -170,11 +171,13 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
                     case R.id.busBtn:
                         // show the list view as dropdown
+                        //buttonTime.setText("TIME");
                         popupWindowDogs = popupWindowDogs(v);
                         popupWindowDogs.showAsDropDown(v, -5, 0);
                         break;
                     case R.id.timeBtn:
                         // show the list view as dropdown
+
                         popupWindowDogs = popupWindowDogs(v);
                         popupWindowDogs.showAsDropDown(v, -5, 0);
                         break;
@@ -494,12 +497,17 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         // set our adapter and pass our pop up window contents
         if(v.getId()==R.id.busBtn)
         {
+
             listViewDogs.setAdapter(dogsAdapter(popUpBus));
             listViewDogs.setDivider(null);
         }
         else if(v.getId()==R.id.timeBtn)
         {
-            listViewDogs.setAdapter(dogsAdapter(popUpTime));
+            Log.d("arusa","before");
+            Log.d("arusa",((GlobalClass)firstActivity.this.getApplication()).BusName);
+            Log.d("arusa","after");
+            BusAndTime b = new BusAndTime(((GlobalClass)firstActivity.this.getApplication()).BusName);
+            listViewDogs.setAdapter(dogsAdapter(b.getTime()));
             listViewDogs.setDivider(null);
         }
 
