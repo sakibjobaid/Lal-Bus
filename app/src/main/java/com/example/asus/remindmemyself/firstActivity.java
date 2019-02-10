@@ -21,10 +21,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -37,6 +39,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -64,7 +67,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
-public class firstActivity extends FragmentActivity implements View.OnClickListener,
+public class firstActivity extends AppCompatActivity implements View.OnClickListener,
         OnMapReadyCallback, GoogleMap.OnCameraMoveCanceledListener,
         GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener,
         GoogleMap.OnCameraMoveListener ,
@@ -107,15 +110,26 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
         //region oncreate declarations
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         img = (ImageView) findViewById(R.id.iconid);
         Log.d("jobaid", "onCreate");
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
+                drawer,
+                toolbar,
+                R.string.nav_open_drawer,
+                R.string.nav_close_drawer);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabloc);
         FloatingActionButton fabt = (FloatingActionButton) findViewById(R.id.fabtraffic);
-        FloatingActionButton fabn=(FloatingActionButton)findViewById(R.id.fabnavigation);
+        //FloatingActionButton fabn=(FloatingActionButton)findViewById(R.id.fabnavigation);
         ConnectivityManager cm =
                 (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -127,7 +141,7 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
            fab.setOnClickListener(this);
            fabt.setOnClickListener(this);
-           fabn.setOnClickListener(this);
+           //fabn.setOnClickListener(this);
 
 
 
@@ -177,9 +191,14 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
                         break;
                     case R.id.timeBtn:
                         // show the list view as dropdown
+                        if(buttonBus.getText().equals("BUS"))
+                            Toast.makeText(firstActivity.this,"Please insert the name of bus first",Toast.LENGTH_LONG).show();
+                        else
+                        {
+                            popupWindowDogs = popupWindowDogs(v);
+                            popupWindowDogs.showAsDropDown(v, -5, 0);
 
-                        popupWindowDogs = popupWindowDogs(v);
-                        popupWindowDogs.showAsDropDown(v, -5, 0);
+                        }
                         break;
                 }
             }
@@ -271,12 +290,13 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        Log.d("sakib","navigation");
+        Log.d("what","navigation");
         int id = item.getItemId();
         Intent intent = null;
 
         switch (id) {
             case R.id.nav_busGeofence:
+                Log.d("what","entered");
                 intent = new Intent(this,GeofenceSettings1.class);
                 startActivity(intent);
                 break;
@@ -880,12 +900,12 @@ public class firstActivity extends FragmentActivity implements View.OnClickListe
 
             }
         }
-        if(v.getId()==R.id.fabnavigation)
-        {
-
-
-            drawer.openDrawer(Gravity.LEFT);
-        }
+//        if(v.getId()==R.id.fabnavigation)
+//        {
+//
+//
+//            drawer.openDrawer(Gravity.LEFT);
+//        }
     }
 
     private void markerPlacing(LatLng currentLatLng) {
