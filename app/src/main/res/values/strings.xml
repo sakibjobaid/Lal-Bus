@@ -4,7 +4,7 @@
     <string name="bus">BUS</string>
     <string name="time">TIME</string>
     <string name="busGeofence">Bus Goe-fence</string>
-    <string name="settings">Settings</string>
+    <string name="settings">Bus Schedule</string>
     <string name="network_unavailable">Network Connection Unavailable</string>
     <string name="GPS_unavailable">GPS Connection Unavailable</string>
     <string name="GPS_msg">Please enable your GPS/Location Service and High Accuracy as locating method</string>

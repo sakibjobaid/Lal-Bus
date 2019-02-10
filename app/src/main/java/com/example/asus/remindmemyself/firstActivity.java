@@ -228,6 +228,8 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 //                if(finalLocation)
 //                currentLatLng = new LatLng(aftercameramove.latitude, aftercameramove.longitude);
 //                else
+
+
                     currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
 
                 Log.d("jobaid", "callback");
@@ -237,8 +239,8 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                     if(finalLocation)
                     {
                         /// location by camere movement
-                        //AdminLocation al= new AdminLocation(aftercameramove.latitude,aftercameramove.longitude);
-                        AdminLocation al= new AdminLocation(lastlocation.getLatitude(), lastlocation.getLongitude());
+                        AdminLocation al= new AdminLocation(aftercameramove.latitude,aftercameramove.longitude);
+                       // AdminLocation al= new AdminLocation(lastlocation.getLatitude(), lastlocation.getLongitude());
                         Log.d("jobaid", "callback2");
                         ref.setValue(al);
                     }
@@ -300,10 +302,10 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                 intent = new Intent(this,GeofenceSettings1.class);
                 startActivity(intent);
                 break;
-//            case R.id.nav_settings:
-//                intent = new Intent(this, ProfileActivity.class);
-//                startActivity(intent);
-//                break;
+            case R.id.nav_settings:
+                intent = new Intent(this, RecylerViewActivity.class);
+                startActivity(intent);
+                break;
 //            case R.id.nav_logout:
 //                AlertDialog.Builder  builder= new AlertDialog.Builder(home_page.this);
 //                builder.setIcon(R.drawable.logout);
@@ -351,12 +353,15 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         lat= (double) dataSnapshot.child("latitude").getValue();
         lng = (double) dataSnapshot.child("longitude").getValue();
         la = new LatLng(lat, lng);
+
         //marker.remove();
         MarkerOptions mk = new MarkerOptions();
         mk.draggable(false);
         mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         marker = mMap.addMarker(mk
                 .position(la));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(la, 15f));
+
 
 //        for(DataSnapshot ds: dataSnapshot.getChildren())
 //        {
@@ -801,6 +806,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
         Log.d("jobaid", "onMapReady");
         mMap = googleMap;
+        if(user)mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnCameraIdleListener(this);
         mMap.setOnCameraMoveListener(this);
@@ -952,12 +958,14 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         img.setVisibility(View.VISIBLE);
         Log.d("jobaid", "idle");
 
-        aftercameramove = mMap.getCameraPosition().target;
+        //aftercameramove = mMap.getCameraPosition().target;
         finalLocation=true;
     }
 
     @Override
     public void onCameraMove() {
+
+        aftercameramove = mMap.getCameraPosition().target;
 
         Log.d("jobaid", "move");
         img.setVisibility(View.VISIBLE);

@@ -32,14 +32,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GeofenceSettings1"  android:parentActivityName=".StartActiviy"/>
+        <activity
+            android:name=".GeofenceSettings1"
+            android:parentActivityName=".StartActiviy" />
 
         <service
             android:name=".GeofenceTransitionsIntentService"
-
             android:exported="false">
 
         </service>
+
+        <activity android:name=".RecylerViewActivity" android:parentActivityName=".StartActiviy">
+
+        </activity>
     </application>
 
 </manifest>
