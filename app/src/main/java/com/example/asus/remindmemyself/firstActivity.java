@@ -424,7 +424,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         //marker.remove();
         MarkerOptions mk = new MarkerOptions();
         mk.draggable(false);
-        mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         marker = mMap.addMarker(mk
                 .position(la));
         if(locBus%2==0&&user)
