@@ -947,6 +947,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
             }
             else
             {
+                zoom=15f;
                 fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_location));
                 freeze=true;
 
