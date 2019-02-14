@@ -391,8 +391,8 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                             if (location != null) {
                                 Log.d("jobaid", "setup deep success");
                                 lastlocation = location;
-                                LatLng currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
-                                markerPlacing(currentLatLng);
+                                currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
+                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));
                             }
 
                         }
