@@ -9,7 +9,7 @@
     <string name="GPS_unavailable">GPS Connection Unavailable</string>
     <string name="GPS_msg">Please enable your GPS/Location Service and High Accuracy as locating method</string>
     <string name="network_msg">Please enable your network connection and try again</string>
-    <string name="log_out">Log out</string>
+    <string name="route">Route and Stoppage</string>
     <string name="instruction_where_description">Where do you want to be reminded?</string>
     <string name="instruction_where_subtitle_description">Drag the map to set the location</string>
     <string name="instruction_radius_description">Choose the radius</string>

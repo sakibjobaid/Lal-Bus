@@ -2,10 +2,11 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#2F1B74</color>
-    <color name="colorAccent">#974ed2</color>
+    <color name="colorAccent">#2F1B74</color>
     <color name="location">#0cb106</color>
     <color name="traffic">#ce0c0c</color>
     <color name="navigation">#f0f40f</color>
     <color name="border">#2F1B74</color>
+    <color name="ripple">#c5b7f1</color>
     <color name="white">#ffffff</color>
 </resources>

@@ -38,11 +38,15 @@
 
         <service
             android:name=".GeofenceTransitionsIntentService"
-            android:exported="false">
+            android:exported="false"></service>
 
-        </service>
+        <activity
+            android:name=".RecylerViewActivity"
+            android:parentActivityName=".StartActiviy">
 
-        <activity android:name=".RecylerViewActivity" android:parentActivityName=".StartActiviy">
+        </activity>
+        <activity android:name=".ScheduleImage"
+            android:parentActivityName=".StartActiviy">
 
         </activity>
     </application>

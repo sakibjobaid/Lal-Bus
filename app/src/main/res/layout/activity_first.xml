@@ -84,9 +84,10 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
+                    android:background="@drawable/rippleeffect"
                     android:drawableRight="@drawable/search"
                     android:id="@+id/searchBtn"
-                    android:background="@drawable/homeright"
+
                     android:paddingRight="10dp" />
 
 
@@ -103,23 +104,21 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="100dp"
-                android:backgroundTint="@color/location"
+                android:backgroundTint="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:scaleType="center"
-                android:src="@drawable/my_location" />
+                android:scaleType="center" />
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fabtraffic"
                 android:layout_width="wrap_content"
-                android:backgroundTint="@color/traffic"
+                android:backgroundTint="@color/white"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="8dp"
                 android:scaleType="center"
-                android:layout_marginBottom="30dp"
-                android:src="@drawable/traffic"/>
+                android:layout_marginBottom="30dp" />
         </RelativeLayout>
     </LinearLayout>
 

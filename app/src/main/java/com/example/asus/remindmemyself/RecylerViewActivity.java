@@ -21,27 +21,34 @@ public class RecylerViewActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        String title= getIntent().getStringExtra("name");
+        switch (title)
+        {
+            case "Bus Schedule":  this.setTitle("Bus Schedule"); break;
+            case "Route And Stoppage":  this.setTitle("Route And Stoppage"); break;
+
+        }
 
 
         scheduleList = new ArrayList<>();
         recyclerView=(RecyclerView)findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        scheduleList.add(new Schedule("Taranga"));
-        scheduleList.add(new Schedule("Srabon"));
+        scheduleList.add(new Schedule("Anando"));
         scheduleList.add(new Schedule("Baishakhi"));
+        scheduleList.add(new Schedule("Boshonto"));
+        scheduleList.add(new Schedule("Chittagong Road"));
+        scheduleList.add(new Schedule("Choitaly"));
+        scheduleList.add(new Schedule("Flaguni"));
+        scheduleList.add(new Schedule("Hemonto"));
+        scheduleList.add(new Schedule("Ishakha"));
         scheduleList.add(new Schedule("Kinchit"));
-        scheduleList.add(new Schedule("Choitali"));
-        scheduleList.add(new Schedule("Taranga"));
+        scheduleList.add(new Schedule("Khonika"));
+        scheduleList.add(new Schedule("Moitree"));
         scheduleList.add(new Schedule("Srabon"));
-        scheduleList.add(new Schedule("Baishakhi"));
-        scheduleList.add(new Schedule("Kinchit"));
-        scheduleList.add(new Schedule("Choitali"));
         scheduleList.add(new Schedule("Taranga"));
-        scheduleList.add(new Schedule("Srabon"));
-        scheduleList.add(new Schedule("Baishakhi"));
-        scheduleList.add(new Schedule("Kinchit"));
-        scheduleList.add(new Schedule("Choitali"));
+        scheduleList.add(new Schedule("Ullash"));
+        scheduleList.add(new Schedule("Wari"));
         scheduleAdapter = new ScheduleAdapter(this,scheduleList);
         recyclerView.setAdapter(scheduleAdapter);
 
