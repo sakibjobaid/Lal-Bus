@@ -41,12 +41,20 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
         scheduleViewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(schedule.getName()=="Taranga")
+                if(schedule.getName().equals("Taranga"))
                 {
                     Intent intent = new Intent(v.getContext(),ScheduleImage.class);
                     intent.putExtra("name","Taranga");
                     v.getContext().startActivity(intent);
                 }
+                else if(schedule.getName().equals(" Taranga"))
+                {
+
+                    Intent intent = new Intent(v.getContext(),MapsActivity.class);
+                    intent.putExtra("name"," Taranga");
+                    v.getContext().startActivity(intent);
+                }
+
                 else
                     Toast.makeText(v.getContext(),"schedule will be added soon",Toast.LENGTH_LONG).show();
 

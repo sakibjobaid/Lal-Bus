@@ -7,6 +7,8 @@
     <string name="settings">Bus Schedule</string>
     <string name="network_unavailable">Network Connection Unavailable</string>
     <string name="GPS_unavailable">GPS Connection Unavailable</string>
+    <string name="Bus_Geofence">Bus Geofence</string>
+    <string name="Bus_msg">Your selected bus entered in your zone!!!</string>
     <string name="GPS_msg">Please enable your GPS/Location Service and High Accuracy as locating method</string>
     <string name="network_msg">Please enable your network connection and try again</string>
     <string name="route">Route and Stoppage</string>

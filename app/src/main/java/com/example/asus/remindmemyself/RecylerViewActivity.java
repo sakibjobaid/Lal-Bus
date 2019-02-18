@@ -29,28 +29,56 @@ public class RecylerViewActivity extends AppCompatActivity {
 
         }
 
+        if(title.equals("Bus Schedule"))
+        {
+            scheduleList = new ArrayList<>();
+            recyclerView=(RecyclerView)findViewById(R.id.recyclerView);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            scheduleList.add(new Schedule("Anando"));
+            scheduleList.add(new Schedule("Baishakhi"));
+            scheduleList.add(new Schedule("Boshonto"));
+            scheduleList.add(new Schedule("Chittagong Road"));
+            scheduleList.add(new Schedule("Choitaly"));
+            scheduleList.add(new Schedule("Flaguni"));
+            scheduleList.add(new Schedule("Hemonto"));
+            scheduleList.add(new Schedule("Ishakha"));
+            scheduleList.add(new Schedule("Kinchit"));
+            scheduleList.add(new Schedule("Khonika"));
+            scheduleList.add(new Schedule("Moitree"));
+            scheduleList.add(new Schedule("Srabon"));
+            scheduleList.add(new Schedule("Taranga"));
+            scheduleList.add(new Schedule("Ullash"));
+            scheduleList.add(new Schedule("Wari"));
+            scheduleAdapter = new ScheduleAdapter(this,scheduleList);
+            recyclerView.setAdapter(scheduleAdapter);
+        }
 
-        scheduleList = new ArrayList<>();
-        recyclerView=(RecyclerView)findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        scheduleList.add(new Schedule("Anando"));
-        scheduleList.add(new Schedule("Baishakhi"));
-        scheduleList.add(new Schedule("Boshonto"));
-        scheduleList.add(new Schedule("Chittagong Road"));
-        scheduleList.add(new Schedule("Choitaly"));
-        scheduleList.add(new Schedule("Flaguni"));
-        scheduleList.add(new Schedule("Hemonto"));
-        scheduleList.add(new Schedule("Ishakha"));
-        scheduleList.add(new Schedule("Kinchit"));
-        scheduleList.add(new Schedule("Khonika"));
-        scheduleList.add(new Schedule("Moitree"));
-        scheduleList.add(new Schedule("Srabon"));
-        scheduleList.add(new Schedule("Taranga"));
-        scheduleList.add(new Schedule("Ullash"));
-        scheduleList.add(new Schedule("Wari"));
-        scheduleAdapter = new ScheduleAdapter(this,scheduleList);
-        recyclerView.setAdapter(scheduleAdapter);
+        else if(title.equals("Route And Stoppage"))
+        {
+            scheduleList = new ArrayList<>();
+            recyclerView=(RecyclerView)findViewById(R.id.recyclerView);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            scheduleList.add(new Schedule(" Anando"));
+            scheduleList.add(new Schedule(" Baishakhi"));
+            scheduleList.add(new Schedule(" Boshonto"));
+            scheduleList.add(new Schedule(" Chittagong Road"));
+            scheduleList.add(new Schedule(" Choitaly"));
+            scheduleList.add(new Schedule(" Flaguni"));
+            scheduleList.add(new Schedule(" Hemonto"));
+            scheduleList.add(new Schedule(" Ishakha"));
+            scheduleList.add(new Schedule(" Kinchit"));
+            scheduleList.add(new Schedule(" Khonika"));
+            scheduleList.add(new Schedule(" Moitree"));
+            scheduleList.add(new Schedule(" Srabon"));
+            scheduleList.add(new Schedule(" Taranga"));
+            scheduleList.add(new Schedule(" Ullash"));
+            scheduleList.add(new Schedule(" Wari"));
+            scheduleAdapter = new ScheduleAdapter(this,scheduleList);
+            recyclerView.setAdapter(scheduleAdapter);
+        }
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

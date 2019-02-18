@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".GlobalClass"
@@ -38,17 +39,16 @@
 
         <service
             android:name=".GeofenceTransitionsIntentService"
+            android:enabled="true"
             android:exported="false"></service>
 
         <activity
             android:name=".RecylerViewActivity"
-            android:parentActivityName=".StartActiviy">
-
-        </activity>
-        <activity android:name=".ScheduleImage"
-            android:parentActivityName=".StartActiviy">
-
-        </activity>
+            android:parentActivityName=".StartActiviy"></activity>
+        <activity
+            android:name=".ScheduleImage"
+            android:parentActivityName=".StartActiviy"></activity>
+        <activity android:name=".MapsActivity"></activity>
     </application>
 
 </manifest>

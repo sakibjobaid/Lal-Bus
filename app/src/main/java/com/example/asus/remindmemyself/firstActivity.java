@@ -29,13 +29,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -164,7 +165,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         if(admin)
         {
 
-            fab.hide();
+
             Log.d("jobaid","admintrue");
             adminloginToFirebase();
 
@@ -180,6 +181,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         height = displayMetrics.heightPixels;
         width = displayMetrics.widthPixels;
+
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -275,6 +277,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if(countMarker>0)
                                 marker.remove();
+                            Log.d("jobaid","asfw");
                             setMarker(dataSnapshot);
                         }
 
@@ -297,460 +300,6 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
         createLocationRequest();
 
-
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-        Log.d("what","navigation");
-        int id = item.getItemId();
-        Intent intent = null;
-
-        switch (id) {
-            case R.id.nav_busGeofence:
-                Log.d("what","entered");
-                intent = new Intent(this,GeofenceSettings1.class);
-                startActivity(intent);
-                break;
-            case R.id.nav_schedule:
-                intent = new Intent(this, RecylerViewActivity.class);
-                intent.putExtra("name","Bus Schedule");
-                startActivity(intent);
-                break;
-
-            case R.id.nav_route:
-                intent = new Intent(this, RecylerViewActivity.class);
-                intent.putExtra("name","Route And Stoppage");
-                startActivity(intent);
-                break;
-//            case R.id.nav_logout:
-//                AlertDialog.Builder  builder= new AlertDialog.Builder(home_page.this);
-//                builder.setIcon(R.drawable.logout);
-//                builder.setMessage("Do you want to logout?");
-//                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        finishAffinity();
-//                        System.exit(0);
-//                    }
-//                });
-//                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                    }
-//                });
-//                AlertDialog alert= builder.create();
-//
-//                alert.show();
-//
-//
-//                break;
-
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-        Log.d("jobaid", "onMapReady");
-        mMap = googleMap;
-        if(user)mMap.getUiSettings().setScrollGesturesEnabled(false);
-        mMap.setOnMarkerClickListener(this);
-        mMap.setOnCameraIdleListener(this);
-        mMap.setOnCameraMoveListener(this);
-        mMap.setOnCameraMoveCanceledListener(this);
-        mMap.setPadding(0,150,0,0);
-        mMap.getUiSettings().setRotateGesturesEnabled(false);
-        setUpMap();
-
-    }
-
-    private void setUpMap() {
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
-        }
-        else {
-            Log.d("jobaid", "setup success");
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-            fusedLocationProviderClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-
-                            Log.d("jobaid", "onSuccess");
-                            if (location != null) {
-                                Log.d("jobaid", "setup deep success");
-                                lastlocation = location;
-                                currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
-                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));
-                            }
-
-                        }
-                    });
-
-        }
-
-
-    }
-
-    private void setMarker(DataSnapshot dataSnapshot) {
-        // When a location update is received, put or update
-        // its value in mMarkers, which contains all the markers
-        // for locations received, so that we can build the
-        // boundaries required to show them all on the map at once
-//        String key = dataSnapshot.getKey();
-        // HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
-
-        Log.d("jobaid","inside setMarker");
-
-        double  lat,lng;
-        LatLng la;
-
-        countMarker++;
-        lat= (double) dataSnapshot.child("latitude").getValue();
-        lng = (double) dataSnapshot.child("longitude").getValue();
-        la = new LatLng(lat, lng);
-
-        //marker.remove();
-        MarkerOptions mk = new MarkerOptions();
-        mk.draggable(false);
-        mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-        marker = mMap.addMarker(mk
-                .position(la));
-        if(locBus%2==0&&user)
-        {
-            Log.d("vejal","fao");
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(la, zoom));
-            freeze=true;
-
-        }
-
-
-//        for(DataSnapshot ds: dataSnapshot.getChildren())
-//        {
-//            Log.d("jobaid","analogy");
-//            AdminLocation ad= ds.getValue(AdminLocation.class);
-//            lat=ad.getLatitude();
-//            lng=ad.getLongitude();
-//            la= new LatLng(lat,lng);
-//            marker.remove();
-//            MarkerOptions mk = new MarkerOptions();
-//            mk.draggable(false);
-//            mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-//            marker = mMap.addMarker(mk
-//                    .position(la));
-//            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(la, zoom));
-//
-//
-//
-//        }
-
-//        if(dataSnapshot.getValue()!=null)
-//        {
-//
-////            lat= (Double) dataSnapshot.child("latitude").getValue();
-////            lng=(Double) dataSnapshot.child("longitude").getValue();
-////            la= new LatLng(lat,lng);
-//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(la, zoom));
-//
-//        }
-
-//        else
-//        {
-//            Log.d("jobaid","value is null");
-//        }
-
-
-
-
-
-
-
-
-
-
-
-//        if (!mMarkers.containsKey(key)) {
-//            mMarkers.put(key, mMap.addMarker(new MarkerOptions().title(key).position(location)));
-//        } else {
-//            mMarkers.get(key).setPosition(location);
-//        }
-//        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-//        for (Marker marker : mMarkers.values()) {
-//            builder.include(marker.getPosition());
-//        }
-        //
-
-    }
-
-
-
-
-    private void markerPlacing(LatLng currentLatLng) {
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
-
-
-//        MarkerOptions mk = new MarkerOptions();
-//        mk.draggable(false);
-//        mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-//        //mk.getIcon()
-//
-//
-//         marker = mMap.addMarker(mk
-//                .position(currentLatLng)
-//                .title("jobaid"));
-//
-//        marker.showInfoWindow();
-
-        //marker.setSnippet("hello");
-        Log.d("jobaid", "markerPlacing");
-        if(user)
-        {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,15));
-
-        }
-        if(admin)
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, zoom));
-
-
-    }
-
-    private void adminloginToFirebase() {
-        // Authenticate with Firebase, and request location updates
-        String email = "test123@gmail.com";
-        String password = "test123";
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(
-                email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>(){
-            @Override
-            public void onComplete(Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Log.d("jobaid", "firebase auth success");
-                    createLocationRequest();
-                } else {
-                    Log.d("jobaid", "firebase auth failed");
-                }
-            }
-        });
-    }
-
-    private void userloginToFirebase() {
-        String email = "test123@gmail.com";
-        String password ="test123" ;
-        // Authenticate with Firebase and subscribe to updates
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(
-                email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    subscribeToUpdates();
-                    Log.d("jobaid", "firebase auth success");
-                } else {
-                    Log.d("jobaid", "firebase auth failed");
-                }
-            }
-        });
-    }
-
-    private void subscribeToUpdates() {
-        // Functionality coming next step
-    }
-
-    private void networkAlert(firstActivity firstActivity) {
-
-        Log.d("jobaid", "networkalert");
-        final Context context = firstActivity.this;
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setMessage(R.string.network_msg);
-        dialog.setTitle(R.string.network_unavailable);
-        dialog.setPositiveButton("Network settings", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                check = true;
-                Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-                context.startActivity(intent);
-            }
-        });
-        alert = dialog.create();
-        alert.show();
-
-    }
-
-    public static boolean isNetworkConnected(Context context) {
-        boolean result = false;
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (cm != null) {
-                NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
-                if (capabilities != null) {
-                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                        result = true;
-                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                        result = true;
-                    }
-                }
-            }
-        } else {
-            if (cm != null) {
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                if (activeNetwork != null) {
-                    // connected to the internet
-                    if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
-                        result = true;
-                    } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
-                        result = true;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    public PopupWindow popupWindowDogs(View v) {
-
-        // initialize a pop up window type
-        PopupWindow popupWindow = new PopupWindow(this);
-
-        // the drop down list is a list view
-        ListView listViewDogs = new ListView(this);
-
-        // set our adapter and pass our pop up window contents
-        if(v.getId()==R.id.busBtn)
-        {
-
-            listViewDogs.setAdapter(dogsAdapter(popUpBus));
-            listViewDogs.setDivider(null);
-        }
-        else if(v.getId()==R.id.timeBtn)
-        {
-            Log.d("arusa","before");
-            Log.d("arusa",((GlobalClass)firstActivity.this.getApplication()).BusName);
-            Log.d("arusa","after");
-            BusAndTime b = new BusAndTime(((GlobalClass)firstActivity.this.getApplication()).BusName);
-            listViewDogs.setAdapter(dogsAdapter(b.getTime()));
-            listViewDogs.setDivider(null);
-        }
-
-        // set the item click listener
-        listViewDogs.setOnItemClickListener( new DogsDropdownOnItemClickListener());
-
-        // some other visual settings
-        popupWindow.setFocusable(false);
-        popupWindow.setWidth((int)(width*.45));
-        popupWindow.setHeight((int)(height*.4));
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-        //popupWindow.setBackgroundDrawable();
-
-        // set the list view as pop up window content
-        popupWindow.setContentView(listViewDogs);
-
-        return popupWindow;
-    }
-
-    /*
-     * adapter where the list values will be set
-     */
-    private ArrayAdapter<String> dogsAdapter(String dogsArray[]) {
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dogsArray) {
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-
-                // setting the ID and text for every items in the list
-                String item = getItem(position);
-                //String[] itemArr = item.split("::");
-                //String text = itemArr[0];
-                //String id = itemArr[1];
-
-                // visual settings for the list item
-                TextView listItem = new TextView(firstActivity.this);
-
-                listItem.setText(item);
-                //listItem.setTag(id);
-                listItem.setHeight(150);
-                listItem.setMinHeight(150);
-                listItem.setTextSize(20);
-                listItem.setPadding(10, 10, 10, 10);
-                listItem.setTextColor(Color.BLACK);
-
-                return listItem;
-            }
-        };
-
-        return adapter;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d("jobaid", "onStart");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        Log.d("jobaid", "onResume");
-
-        if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Log.d("jobaid", "b4 locationupdate");
-            startLocationUpdates();
-        } else
-            alertMethod();
-
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("jobaid", "onPause");
-
-        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
-        {
-            alert.dismiss();
-            alert.cancel();
-        }
-        if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-                fusedLocationProviderClient.getLastLocation()
-                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-
-                                Log.d("jobaid", "onSuccess");
-                                if (location != null) {
-                                    Log.d("jobaid", "setup deep success");
-                                    lastlocation = location;
-                                    LatLng currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
-                                    markerPlacing(currentLatLng);
-                                }
-
-                            }
-                        });
-            }
-        }
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
 
     }
 
@@ -880,6 +429,28 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("jobaid", "onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        Log.d("jobaid", "onResume");
+
+        if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Log.d("jobaid", "b4 locationupdate");
+            startLocationUpdates();
+        } else
+            alertMethod();
+
+
+    }
+
     private void startLocationUpdates() {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -889,6 +460,456 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         Log.d("jobaid", "startLocationUpdate");
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, handlerThread.getLooper());
     }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        Log.d("jobaid", "onMapReady");
+        mMap = googleMap;
+        if(user)mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnCameraIdleListener(this);
+        mMap.setOnCameraMoveListener(this);
+        mMap.setOnCameraMoveCanceledListener(this);
+        mMap.setPadding(0,150,0,0);
+        mMap.getUiSettings().setRotateGesturesEnabled(false);
+        setUpMap();
+
+    }
+
+    private void setUpMap() {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+        }
+        else {
+            Log.d("jobaid", "setup success");
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+            fusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+
+                            Log.d("jobaid", "onSuccess");
+                            if (location != null) {
+                                Log.d("jobaid", "setup deep success");
+                                lastlocation = location;
+                                currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
+                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));
+                            }
+
+                        }
+                    });
+
+        }
+    }
+
+    @Override
+    public void onCameraMoveCanceled() {
+
+        Log.d("jobaid", "ouside onCamereMoveCanceled");
+        if (flag) {
+            Log.d("jobaid", "onCamereMoveCanceled");
+            //flag=false;
+            zoom= mMap.getCameraPosition().zoom;
+            markerPlacing(mMap.getCameraPosition().target);
+
+        }
+    }
+
+    private void markerPlacing(LatLng currentLatLng) {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+
+
+//        MarkerOptions mk = new MarkerOptions();
+//        mk.draggable(false);
+//        mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+//        //mk.getIcon()
+//
+//
+//         marker = mMap.addMarker(mk
+//                .position(currentLatLng)
+//                .title("jobaid"));
+//
+//        marker.showInfoWindow();
+
+        //marker.setSnippet("hello");
+        Log.d("jobaid", "markerPlacing");
+        if(user)
+        {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,15));
+
+        }
+        if(admin)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, zoom));
+
+
+    }
+
+    private void setMarker(DataSnapshot dataSnapshot) {
+        // When a location update is received, put or update
+        // its value in mMarkers, which contains all the markers
+        // for locations received, so that we can build the
+        // boundaries required to show them all on the map at once
+//        String key = dataSnapshot.getKey();
+        // HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
+
+        Log.d("jobaid","inside setMarkerccv");
+
+        double  lat,lng;
+        LatLng la;
+
+        countMarker++;
+        lat= (double) dataSnapshot.child("latitude").getValue();
+        lng = (double) dataSnapshot.child("longitude").getValue();
+        la = new LatLng(lat, lng);
+
+        //marker.remove();
+        MarkerOptions mk = new MarkerOptions();
+        mk.draggable(false);
+        mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        marker = mMap.addMarker(mk
+                .position(la));
+        if(locBus%2==0&&user)
+        {
+            Log.d("vejal","fao");
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(la, zoom));
+            freeze=true;
+
+        }
+
+
+//        for(DataSnapshot ds: dataSnapshot.getChildren())
+//        {
+//            Log.d("jobaid","analogy");
+//            AdminLocation ad= ds.getValue(AdminLocation.class);
+//            lat=ad.getLatitude();
+//            lng=ad.getLongitude();
+//            la= new LatLng(lat,lng);
+//            marker.remove();
+//            MarkerOptions mk = new MarkerOptions();
+//            mk.draggable(false);
+//            mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+//            marker = mMap.addMarker(mk
+//                    .position(la));
+//            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(la, zoom));
+//
+//
+//
+//        }
+
+//        if(dataSnapshot.getValue()!=null)
+//        {
+//
+////            lat= (Double) dataSnapshot.child("latitude").getValue();
+////            lng=(Double) dataSnapshot.child("longitude").getValue();
+////            la= new LatLng(lat,lng);
+//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(la, zoom));
+//
+//        }
+
+//        else
+//        {
+//            Log.d("jobaid","value is null");
+//        }
+
+
+
+
+
+
+
+
+
+
+
+//        if (!mMarkers.containsKey(key)) {
+//            mMarkers.put(key, mMap.addMarker(new MarkerOptions().title(key).position(location)));
+//        } else {
+//            mMarkers.get(key).setPosition(location);
+//        }
+//        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+//        for (Marker marker : mMarkers.values()) {
+//            builder.include(marker.getPosition());
+//        }
+        //
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("jobaid", "onPauselk");
+
+
+
+
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
+        {
+            alert.dismiss();
+            alert.cancel();
+        }
+        if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+                fusedLocationProviderClient.getLastLocation()
+                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+
+                                Log.d("jobaid", "onSuccess");
+                                if (location != null) {
+                                    Log.d("jobaid", "setup deep success");
+                                    lastlocation = location;
+                                    LatLng currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
+                                    markerPlacing(currentLatLng);
+                                }
+
+                            }
+                        });
+            }
+        }
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        Log.d("jobaid","navigation outside");
+        int id = item.getItemId();
+        Intent intent = null;
+
+        switch (id) {
+            case R.id.nav_busGeofence:
+                Log.d("jobaid","navigation inside switch");
+                intent = new Intent(this,GeofenceSettings1.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_schedule:
+                intent = new Intent(this, RecylerViewActivity.class);
+                intent.putExtra("name","Bus Schedule");
+                startActivity(intent);
+                break;
+
+            case R.id.nav_route:
+                intent = new Intent(this, RecylerViewActivity.class);
+                intent.putExtra("name","Route And Stoppage");
+                startActivity(intent);
+                break;
+//            case R.id.nav_logout:
+//                AlertDialog.Builder  builder= new AlertDialog.Builder(home_page.this);
+//                builder.setIcon(R.drawable.logout);
+//                builder.setMessage("Do you want to logout?");
+//                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        finishAffinity();
+//                        System.exit(0);
+//                    }
+//                });
+//                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                });
+//                AlertDialog alert= builder.create();
+//
+//                alert.show();
+//
+//
+//                break;
+
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void adminloginToFirebase() {
+        // Authenticate with Firebase, and request location updates
+        String email = "test123@gmail.com";
+        String password = "test123";
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(
+                email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>(){
+            @Override
+            public void onComplete(Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Log.d("jobaid", "firebase auth success");
+                    createLocationRequest();
+                } else {
+                    Log.d("jobaid", "firebase auth failed");
+                }
+            }
+        });
+    }
+
+    private void userloginToFirebase() {
+        String email = "test123@gmail.com";
+        String password ="test123" ;
+        // Authenticate with Firebase and subscribe to updates
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(
+                email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    subscribeToUpdates();
+                    Log.d("jobaid", "firebase auth success");
+                } else {
+                    Log.d("jobaid", "firebase auth failed");
+                }
+            }
+        });
+    }
+
+    private void subscribeToUpdates() {
+        // Functionality coming next step
+        Log.d("jobaid","subscribeToUpdates");
+    }
+
+    private void networkAlert(firstActivity firstActivity) {
+
+        Log.d("jobaid", "networkalert");
+        final Context context = firstActivity.this;
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setMessage(R.string.network_msg);
+        dialog.setTitle(R.string.network_unavailable);
+        dialog.setPositiveButton("Network settings", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                check = true;
+                Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                context.startActivity(intent);
+            }
+        });
+        alert = dialog.create();
+        alert.show();
+
+    }
+
+    public static boolean isNetworkConnected(Context context) {
+
+        Log.d("jobaid","outside isNetworkConnectec");
+        boolean result = false;
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (cm != null) {
+                NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
+                if (capabilities != null) {
+                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                        result = true;
+                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                        result = true;
+                    }
+                }
+            }
+        } else {
+            if (cm != null) {
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                if (activeNetwork != null) {
+                    // connected to the internet
+                    if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                        result = true;
+                    } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
+                        result = true;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public PopupWindow popupWindowDogs(View v) {
+
+        Log.d("papa","popupWindows");
+        // initialize a pop up window type
+        PopupWindow popupWindow = new PopupWindow(this);
+
+        // the drop down list is a list view
+        final ListView listViewDogs = new ListView(this);
+
+
+        // set our adapter and pass our pop up window contents
+        if(v.getId()==R.id.busBtn)
+        {
+            listViewDogs.setAdapter(dogsAdapter(popUpBus));
+            listViewDogs.setDivider(null);
+        }
+        else if(v.getId()==R.id.timeBtn)
+        {
+            Log.d("jobaid","before");
+            Log.d("jobaid",((GlobalClass)firstActivity.this.getApplication()).BusName);
+            Log.d("jobaid","after");
+            BusAndTime b = new BusAndTime(((GlobalClass)firstActivity.this.getApplication()).BusName);
+            listViewDogs.setAdapter(dogsAdapter(b.getTime()));
+            listViewDogs.setDivider(null);
+        }
+
+        // set the item click listener
+        listViewDogs.setOnItemClickListener( new DogsDropdownOnItemClickListener());
+
+
+        // some other visual settings
+        popupWindow.setFocusable(false);
+        popupWindow.setWidth((int)(width*.45));
+        popupWindow.setHeight((int)(height*.4));
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        //popupWindow.setBackgroundDrawable();
+
+        // set the list view as pop up window content
+        popupWindow.setContentView(listViewDogs);
+
+        return popupWindow;
+    }
+
+    /*
+     * adapter where the list values will be set
+     */
+    private ArrayAdapter<String> dogsAdapter(String dogsArray[]) {
+
+        Log.d("jobaid","dogsAdapter");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.list_popup, dogsArray) {
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                // setting the ID and text for every items in the list
+                String item = getItem(position);
+                //String[] itemArr = item.split("::");
+                //String text = itemArr[0];
+                //String id = itemArr[1];
+
+                // visual settings for the list item
+                TextView listItem = new TextView(firstActivity.this);
+
+                listItem.setText(item);
+                //listItem.setTag(id);
+                listItem.setHeight(150);
+                listItem.setMinHeight(150);
+                listItem.setTextSize(20);
+                listItem.setPadding(10, 10, 10, 10);
+                listItem.setTextColor(Color.BLACK);
+
+                return listItem;
+            }
+        };
+
+        return adapter;
+    }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -935,8 +956,16 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
 
+        if(v.getId()==R.id.fabloc && admin)
+        {
+                zoom=15f;
+                markerPlacing(currentLatLng);
+
+        }
+
         if (v.getId() == R.id.fabloc&&user) {
             locBus++;
+
             if(locBus%2==1)
             {
 
@@ -976,14 +1005,14 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
             if (mMap.isTrafficEnabled())
             {
                 mMap.setTrafficEnabled(false);
-                Log.d("para","disabled");
+                Log.d("jobaid","disabled");
 
             }
             else
             {
                 mMap.setTrafficEnabled(true);
 
-                Log.d("para","enabled");
+                Log.d("jobaid","enabled");
 
             }
         }
@@ -1025,7 +1054,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         aftercameramove = mMap.getCameraPosition().target;
         zoom= mMap.getCameraPosition().zoom;
 
-        Log.d("aid", "move " +String.valueOf(zoom));
+        Log.d("jobaid", "move " +String.valueOf(zoom));
         if(admin)
         img.setVisibility(View.VISIBLE);
         /// to remove previous marker due to continuos calling of the markerplacing
@@ -1034,18 +1063,6 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    @Override
-    public void onCameraMoveCanceled() {
-
-        Log.d("jobaid", "ouside sb");
-        if (flag) {
-            Log.d("jobaid", "sb");
-            //flag=false;
-            zoom= mMap.getCameraPosition().zoom;
-            markerPlacing(mMap.getCameraPosition().target);
-
-        }
-    }
 
 
 
