@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:name=".GlobalClass"
         android:allowBackup="true"
@@ -40,15 +42,24 @@
         <service
             android:name=".GeofenceTransitionsIntentService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false">
+
+        </service>
 
         <activity
             android:name=".RecylerViewActivity"
-            android:parentActivityName=".StartActiviy"></activity>
+            android:parentActivityName=".StartActiviy">
+
+        </activity>
         <activity
             android:name=".ScheduleImage"
-            android:parentActivityName=".StartActiviy"></activity>
-        <activity android:name=".MapsActivity"></activity>
+            android:parentActivityName=".StartActiviy">
+
+        </activity>
+        <activity android:name=".MapsActivity"
+            android:parentActivityName=".StartActiviy">
+
+        </activity>
     </application>
 
 </manifest>

@@ -1,26 +1,51 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:background="@color/colorPrimary"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/toolbar" />
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MapsActivity" />
+        android:padding="5dp"
 
-    <Button
-        android:id="@+id/btn_resetAnimation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        android:background="#000"
-        android:layout_marginBottom="10dp"
-        android:textColor="#fff"
-        android:visibility="visible"/>
-</FrameLayout>
+        android:layout_height="0dp"
+        android:layout_weight="10">
 
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:map="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_weight="9"
+            android:layout_height="match_parent">
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:map="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MapsActivity" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabtrip"
+                android:layout_width="wrap_content"
+                android:backgroundTint="@color/white"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginRight="8dp"
+
+                android:scaleType="center"
+                android:layout_marginBottom="30dp" />
+
+
+        </FrameLayout>
+    </android.support.v7.widget.CardView>
+
+
+</LinearLayout>

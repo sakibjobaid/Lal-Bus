@@ -117,6 +117,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="8dp"
+
                 android:scaleType="center"
                 android:layout_marginBottom="30dp" />
         </RelativeLayout>

@@ -20,6 +20,7 @@ public class StartActiviy extends AppCompatActivity implements View.OnClickListe
         mUser.setOnClickListener(this);
     }
 
+
     @Override
     public void onClick(View v) {
 
@@ -40,4 +41,5 @@ public class StartActiviy extends AppCompatActivity implements View.OnClickListe
             finish();
         }
     }
+    
 }

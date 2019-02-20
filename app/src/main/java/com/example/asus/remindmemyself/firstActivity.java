@@ -35,8 +35,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -95,7 +93,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     private Location lastlocation;
     final HandlerThread handlerThread= new HandlerThread("RequestLocation");;
     private LatLng currentLatLng = null, aftercameramove;
-    private boolean flag = true,admin=false,user=false,finalLocation=false;
+    public static boolean flag = true,admin=false,user=false,finalLocation=false;
     private Marker marker;
     private HashMap<String, Marker> mMarkers = new HashMap<>();
     private int count = 0, call = 0;
@@ -1042,7 +1040,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         //currentLatLng=mMap.getCameraPosition().target;
         if(admin)
         img.setVisibility(View.VISIBLE);
-        Log.d("jobaid", "idle");
+        //Log.d("jobaid", "idle");
 
         //aftercameramove = mMap.getCameraPosition().target;
         finalLocation=true;
@@ -1054,7 +1052,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         aftercameramove = mMap.getCameraPosition().target;
         zoom= mMap.getCameraPosition().zoom;
 
-        Log.d("jobaid", "move " +String.valueOf(zoom));
+        //Log.d("jobaid", "move " +String.valueOf(zoom));
         if(admin)
         img.setVisibility(View.VISIBLE);
         /// to remove previous marker due to continuos calling of the markerplacing
