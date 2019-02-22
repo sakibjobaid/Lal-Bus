@@ -55,6 +55,22 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
                     v.getContext().startActivity(intent);
                 }
 
+                else if(schedule.getName().equals(" Khonika"))
+                {
+
+                    Intent intent = new Intent(v.getContext(),MapsActivity.class);
+                    intent.putExtra("name"," Khonika");
+                    v.getContext().startActivity(intent);
+                }
+
+                else if(schedule.getName().equals(" Boishakhi"))
+                {
+
+                    Intent intent = new Intent(v.getContext(),MapsActivity.class);
+                    intent.putExtra("name"," Boishakhi");
+                    v.getContext().startActivity(intent);
+                }
+
                 else
                     Toast.makeText(v.getContext(),"schedule will be added soon",Toast.LENGTH_LONG).show();
 

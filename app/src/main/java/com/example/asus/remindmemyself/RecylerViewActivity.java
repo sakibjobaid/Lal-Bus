@@ -36,7 +36,7 @@ public class RecylerViewActivity extends AppCompatActivity {
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             scheduleList.add(new Schedule("Anando"));
-            scheduleList.add(new Schedule("Baishakhi"));
+            scheduleList.add(new Schedule("Boishakhi"));
             scheduleList.add(new Schedule("Boshonto"));
             scheduleList.add(new Schedule("Chittagong Road"));
             scheduleList.add(new Schedule("Choitaly"));
@@ -61,7 +61,7 @@ public class RecylerViewActivity extends AppCompatActivity {
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             scheduleList.add(new Schedule(" Anando"));
-            scheduleList.add(new Schedule(" Baishakhi"));
+            scheduleList.add(new Schedule(" Boishakhi"));
             scheduleList.add(new Schedule(" Boshonto"));
             scheduleList.add(new Schedule(" Chittagong Road"));
             scheduleList.add(new Schedule(" Choitaly"));

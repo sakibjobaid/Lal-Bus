@@ -4,7 +4,7 @@
     <group android:checkableBehavior="single" >
         <item
 
-                android:id="@+id/nav_busGeofence"
+                android:id="@+id/nav_busReminder"
                 android:icon="@drawable/email"
                 android:title="@string/busGeofence"
                 android:checked="true" />
@@ -16,6 +16,11 @@
                 android:id="@+id/nav_route"
                 android:icon="@android:drawable/ic_menu_send"
                 android:title="@string/route" />
+
+        <item
+            android:id="@+id/nav_locationAlarm"
+            android:icon="@android:drawable/ic_menu_send"
+            android:title="@string/locationAlarm" />
 
     </group>
 </menu>

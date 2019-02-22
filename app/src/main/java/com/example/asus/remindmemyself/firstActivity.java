@@ -2,6 +2,9 @@ package com.example.asus.remindmemyself;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,17 +13,24 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.HandlerThread;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -80,7 +90,10 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     private GoogleMap mMap;
     private static float zoom=15f;
     public boolean freeze=true;
+    public static boolean oncealarm=false;
     int height,width;
+    final long[] pattern = {0, 1000, 1000, 1000, 1000};
+    public static Location centerLocation=null,adminLocation;
     public PopupWindow popupWindowDogs;
     public Button buttonBus,buttonTime;
     public String popUpBus [] = {"Anando","Baishakhi","Boshonto","Chittagong Road","Choitaly","Falguni","Hemonto","Ishakha","Kinchit","Khonika","Moitree/null","Srabon","Taranga","Ullash","Wari"};
@@ -93,12 +106,17 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     private Location lastlocation;
     final HandlerThread handlerThread= new HandlerThread("RequestLocation");;
     private LatLng currentLatLng = null, aftercameramove;
-    public static boolean flag = true,admin=false,user=false,finalLocation=false;
+    public static boolean flag = true,admin=false,user=false,finalLocation=false,alarmflag=true;
     private Marker marker;
     private HashMap<String, Marker> mMarkers = new HashMap<>();
-    private int count = 0, call = 0;
+    private int count = 0, call = 0,indexNumber=0;
     private ImageView img;
+    public static float dis;
+    private Uri uri;
     private LocationManager lm;
+    private Ringtone defaultRingtone;
+    private  Vibrator myVib;
+    private  AudioManager am;
     private AlertDialog.Builder dialog;
     private AlertDialog alert;
     DogsDropdownOnItemClickListener d= new DogsDropdownOnItemClickListener();
@@ -112,7 +130,15 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         //region oncreate declarations
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
+        Log.d("statetracking", "onCreate");
 
+        centerLocation= new Location("");
+//        centerLocation.setLatitude(23.738185);
+//        centerLocation.setLongitude(90.372447);
+        adminLocation = new Location("");
+//        adminLocation.setLatitude(23.739167);
+//        adminLocation.setLongitude(90.375430);
+        Log.d("ammu",String.valueOf(adminLocation.distanceTo(centerLocation)));
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -139,25 +165,25 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         ConnectivityManager cm =
                 (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-       if(!isNetworkConnected(this))
-       {
-           networkAlert(this);
-       }
+        if(!isNetworkConnected(this))
+        {
+            networkAlert(this);
+        }
 
 
-           fab.setOnClickListener(this);
-           fabt.setOnClickListener(this);
-           //fabn.setOnClickListener(this);
+        fab.setOnClickListener(this);
+        fabt.setOnClickListener(this);
+        //fabn.setOnClickListener(this);
 
 
 
 
         //endregion
 
-    if((getIntent().getStringExtra("name")).equals("admin"))
-        admin=true;
-    if((getIntent().getStringExtra("name")).equals("user"))
-        user=true;
+        if((getIntent().getStringExtra("name")).equals("admin"))
+            admin=true;
+        if((getIntent().getStringExtra("name")).equals("user"))
+            user=true;
 
 
         if(admin)
@@ -230,7 +256,18 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                 super.onLocationResult(locationResult);
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("AdminLocation");
 
+
+//                Location abc = new Location("");
+//                abc.setLatitude(23.738208);
+//                abc.setLongitude(90.372509);
+//
+//                Location abcd = new Location("");
+//                abcd.setLatitude(23.739161);
+//                abcd.setLongitude(90.375492);
+
                 lastlocation = locationResult.getLastLocation();
+//                float dis= abcd.distanceTo(abc);
+//                Toast.makeText(firstActivity.this,String.valueOf(dis),Toast.LENGTH_LONG).show();
                 ((GlobalClass)firstActivity.this.getApplication()).lat=lastlocation.getLatitude();
                 ((GlobalClass)firstActivity.this.getApplication()).lon=lastlocation.getLongitude();
 
@@ -241,24 +278,24 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 //                else
 
 
-                    currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
+                currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
 
-                Log.d("jobaid", "callback");
+                //Log.d("jobaid", "callback");
                 if(admin)
                 {
-                    Log.d("jobaid","b4callback");
+                    //Log.d("jobaid","b4callback");
                     if(finalLocation)
                     {
                         /// location by camere movement
                         AdminLocation al= new AdminLocation(aftercameramove.latitude,aftercameramove.longitude);
-                       // AdminLocation al= new AdminLocation(lastlocation.getLatitude(), lastlocation.getLongitude());
-                        Log.d("jobaid", "callback2");
+                        /// AdminLocation al= new AdminLocation(lastlocation.getLatitude(), lastlocation.getLongitude());
+                        //Log.d("jobaid", "callback2");
                         ref.setValue(al);
                     }
                     else
                     {
                         AdminLocation al= new AdminLocation(lastlocation.getLatitude(),lastlocation.getLongitude());
-                        Log.d("jobaid", "callback2");
+                        //Log.d("jobaid", "callback2");
                         ref.setValue(al);
                     }
 
@@ -269,13 +306,13 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                 if(user)
                 {
 
-                    Log.d("jobaid","inside user");
+                    //Log.d("jobaid","inside user");
                     ref.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if(countMarker>0)
                                 marker.remove();
-                            Log.d("jobaid","asfw");
+                            //Log.d("jobaid","asfw");
                             setMarker(dataSnapshot);
                         }
 
@@ -431,6 +468,8 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     protected void onStart() {
         super.onStart();
         Log.d("jobaid", "onStart");
+        Log.d("statetracking", "onStart");
+
     }
 
     @Override
@@ -439,6 +478,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         Log.d("jobaid", "onResume");
+        Log.d("statetracking", "onResume");
 
         if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Log.d("jobaid", "b4 locationupdate");
@@ -462,7 +502,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        Log.d("jobaid", "onMapReady");
+        //Log.d("jobaid", "onMapReady");
         mMap = googleMap;
         if(user)mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.setOnMarkerClickListener(this);
@@ -539,7 +579,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 //        marker.showInfoWindow();
 
         //marker.setSnippet("hello");
-        Log.d("jobaid", "markerPlacing");
+       // Log.d("jobaid", "markerPlacing");
         if(user)
         {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,15));
@@ -559,7 +599,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 //        String key = dataSnapshot.getKey();
         // HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
 
-        Log.d("jobaid","inside setMarkerccv");
+        //Log.d("jobaid","inside setMarkerccv");
 
         double  lat,lng;
         LatLng la;
@@ -567,6 +607,33 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         countMarker++;
         lat= (double) dataSnapshot.child("latitude").getValue();
         lng = (double) dataSnapshot.child("longitude").getValue();
+        adminLocation.setLatitude(lat);
+        adminLocation.setLongitude(lng);
+        //Log.d("like","b4entering");
+        if(centerLocation!=null)
+        {
+            dis=adminLocation.distanceTo(centerLocation);
+            Log.d("like",String.valueOf(centerLocation.getLatitude())+ ","+String.valueOf(centerLocation.getLongitude()));
+            //Log.d("like",String.valueOf(adminLocation.getLatitude())+ ","+String.valueOf(adminLocation.getLongitude()));
+
+            Log.d("like",String.valueOf(adminLocation.distanceTo(centerLocation))+ "  afterentering  "+String.valueOf(GeofenceSettings1.radius));
+
+            if(dis<=GeofenceSettings1.radius )
+            {
+                Log.d("liker","hose2");
+                alarmflag=false;
+                if(oncealarm )
+                {
+                    oncealarm=false;
+                    busGeofenceAlarm();
+                    busGeofenceAlertDialog();
+                    notification();
+                }
+
+
+            }
+        }
+
         la = new LatLng(lat, lng);
 
         //marker.remove();
@@ -580,7 +647,6 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
             Log.d("vejal","fao");
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(la, zoom));
             freeze=true;
-
         }
 
 
@@ -641,10 +707,117 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+    private void notification() {
+        createNotificationChannel();
+        sendNotification("Bus entered in your selected zone");
+    }
+
+    private void sendNotification(String msg) {
+        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "1")
+                .setSmallIcon(R.drawable.pin)
+                .setContentTitle("Bus Notification")
+                .setContentText(msg)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                // Set the intent that will fire when the user taps the notification
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(false);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+// notificationId is a unique int for each notification that you must define
+        notificationManager.notify(3, mBuilder.build());
+    }
+
+    private void createNotificationChannel() {
+        Log.d("jobaid", "Intent:createNotificationChannel");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "channel one";
+            String description = "this is channel one method";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("2", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private   void busGeofenceAlertDialog()  {
+
+        Log.d("jobaid", "first:alertdialog");
+        //Context context = getApplicationContext();
+
+        dialog = new AlertDialog.Builder(this);
+        Log.d("jobaid","first:fox");
+
+        dialog.setTitle("Bus Notification");
+        dialog.setIcon(R.drawable.bus_enter);
+        dialog.setMessage(R.string.Bus_msg);
+
+
+
+        dialog.setPositiveButton("Stop Alarm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                //check = true;
+                defaultRingtone.stop();
+                myVib.cancel();
+                //finish();
+//                Intent intent = new Intent(firstActivity.this,firstActivity.class);
+//                if(firstActivity.admin)intent.putExtra("name","admin");
+//                else if(firstActivity.user)intent.putExtra("name","user");
+//                startActivity(intent);
+            }
+        });
+        Log.d("vox","rashidul");
+        alert =dialog.create();
+        alert.show();
+        alert.setCanceledOnTouchOutside(false);
+        alert.setCancelable(false);
+    }
+
+    private void busGeofenceAlarm()  {
+
+        uri = RingtoneManager.getActualDefaultRingtoneUri(firstActivity.this.getApplicationContext(), RingtoneManager.TYPE_ALARM);
+        defaultRingtone = RingtoneManager.getRingtone(firstActivity.this, uri);
+        myVib = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
+
+        am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        if(am.getRingerMode()== AudioManager.RINGER_MODE_NORMAL)
+        {
+            defaultRingtone.play();
+            myVib.vibrate(pattern,index());
+        }
+        else if(am.getRingerMode()==AudioManager.RINGER_MODE_VIBRATE || am.getRingerMode()==AudioManager.RINGER_MODE_SILENT)
+        {
+
+            myVib.vibrate(pattern,index());
+
+        }
+    }
+
+    private int index() {
+
+        ++indexNumber;
+        if(indexNumber==45)
+        {
+            alert.cancel();
+            alert.dismiss();
+            return -1;
+        }
+        else return 0;
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
         Log.d("jobaid", "onPauselk");
+        Log.d("statetracking", "onPause");
 
 
 
@@ -688,9 +861,18 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         Intent intent = null;
 
         switch (id) {
-            case R.id.nav_busGeofence:
+            case R.id.nav_busReminder:
+                oncealarm=true;
+
                 Log.d("jobaid","navigation inside switch");
                 intent = new Intent(this,GeofenceSettings1.class);
+                intent.putExtra("purpose","busReminder");
+                startActivity(intent);
+                break;
+            case R.id.nav_locationAlarm:
+                Log.d("jobaid","navigation inside switch");
+                intent = new Intent(this,GeofenceSettings1.class);
+                intent.putExtra("purpose","locationAlarm");
                 startActivity(intent);
                 break;
             case R.id.nav_schedule:
@@ -830,7 +1012,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
     public PopupWindow popupWindowDogs(View v) {
 
-        Log.d("papa","popupWindows");
+        Log.d("joabid","popupWindows");
         // initialize a pop up window type
         PopupWindow popupWindow = new PopupWindow(this);
 
@@ -872,9 +1054,6 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         return popupWindow;
     }
 
-    /*
-     * adapter where the list values will be set
-     */
     private ArrayAdapter<String> dogsAdapter(String dogsArray[]) {
 
         Log.d("jobaid","dogsAdapter");
@@ -907,8 +1086,6 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         return adapter;
     }
 
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
@@ -928,7 +1105,6 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
             System.exit(0);
         }
     }
-
 
     private void alertMethod() {
 
@@ -956,8 +1132,8 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
         if(v.getId()==R.id.fabloc && admin)
         {
-                zoom=15f;
-                markerPlacing(currentLatLng);
+            zoom=15f;
+            markerPlacing(currentLatLng);
 
         }
 
@@ -981,7 +1157,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
             }
 
 
-           //
+            //
         }
         if (v.getId() == R.id.fabtraffic) {
 
@@ -1022,8 +1198,6 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 //        }
     }
 
-
-
     @Override
     public boolean onMarkerClick(Marker marker) {
 
@@ -1039,10 +1213,10 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     public void onCameraIdle() {
         //currentLatLng=mMap.getCameraPosition().target;
         if(admin)
-        img.setVisibility(View.VISIBLE);
+            img.setVisibility(View.VISIBLE);
         //Log.d("jobaid", "idle");
 
-        //aftercameramove = mMap.getCameraPosition().target;
+        aftercameramove = mMap.getCameraPosition().target;
         finalLocation=true;
     }
 
@@ -1054,7 +1228,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
         //Log.d("jobaid", "move " +String.valueOf(zoom));
         if(admin)
-        img.setVisibility(View.VISIBLE);
+            img.setVisibility(View.VISIBLE);
         /// to remove previous marker due to continuos calling of the markerplacing
 
         //marker.remove();
@@ -1062,6 +1236,16 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("statetracking", "onStop");
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("statetracking", "onDestroy");
 
+    }
 }
