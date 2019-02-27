@@ -24,7 +24,7 @@
 
 
 
-        <RelativeLayout
+        <FrameLayout
 
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -43,6 +43,7 @@
                 android:layout_height="match_parent"
                 tools:context=".firstActivity" />
             <ImageView
+                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -53,6 +54,7 @@
 
             <LinearLayout
 
+                android:id="@+id/linear"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginLeft="5dp"
@@ -64,7 +66,7 @@
                 <Button
                     android:paddingRight="10dp"
                     android:layout_weight="6"
-                    android:text="@string/bus"
+
                     android:id="@+id/busBtn"
                     android:drawableRight="@drawable/low1"
                     android:layout_width="0dp"
@@ -76,10 +78,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="6"
                     android:id="@+id/timeBtn"
+
                     android:background="@drawable/home_right_left_flat"
                     android:drawableRight="@drawable/low1"
                     android:paddingRight="10dp"
-                    android:text="@string/time" />
+                     />
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -106,6 +109,7 @@
                 android:layout_marginBottom="100dp"
                 android:backgroundTint="@color/white"
                 android:layout_width="wrap_content"
+                android:layout_gravity="right|bottom"
                 android:layout_height="wrap_content"
                 android:scaleType="center" />
 
@@ -114,13 +118,14 @@
                 android:layout_width="wrap_content"
                 android:backgroundTint="@color/white"
                 android:layout_height="wrap_content"
+                android:layout_gravity="right|bottom"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="8dp"
 
                 android:scaleType="center"
                 android:layout_marginBottom="30dp" />
-        </RelativeLayout>
+        </FrameLayout>
     </LinearLayout>
 
     <android.support.design.widget.NavigationView

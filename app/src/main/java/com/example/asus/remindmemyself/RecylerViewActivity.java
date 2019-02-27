@@ -40,7 +40,7 @@ public class RecylerViewActivity extends AppCompatActivity {
             scheduleList.add(new Schedule("Boshonto"));
             scheduleList.add(new Schedule("Chittagong Road"));
             scheduleList.add(new Schedule("Choitaly"));
-            scheduleList.add(new Schedule("Flaguni"));
+            scheduleList.add(new Schedule("Falguni"));
             scheduleList.add(new Schedule("Hemonto"));
             scheduleList.add(new Schedule("Ishakha"));
             scheduleList.add(new Schedule("Kinchit"));
@@ -65,7 +65,7 @@ public class RecylerViewActivity extends AppCompatActivity {
             scheduleList.add(new Schedule(" Boshonto"));
             scheduleList.add(new Schedule(" Chittagong Road"));
             scheduleList.add(new Schedule(" Choitaly"));
-            scheduleList.add(new Schedule(" Flaguni"));
+            scheduleList.add(new Schedule(" Falguni"));
             scheduleList.add(new Schedule(" Hemonto"));
             scheduleList.add(new Schedule(" Ishakha"));
             scheduleList.add(new Schedule(" Kinchit"));

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,9 +17,6 @@ import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +43,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -64,6 +63,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -86,17 +86,20 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     private static int interval =5000, fastinterval = 2000;
     public StoppageMarkerPosition sp= new StoppageMarkerPosition();
     private DrawerLayout drawer;
-    private int countMarker=0,locBus=0;
+    private static int countMarker=0,locBus=0;
     private GoogleMap mMap;
     private static float zoom=15f;
-    public boolean freeze=true;
+    public boolean freeze=true,secondflag=false;
     public static boolean oncealarm=false;
     int height,width;
+    public static PopupWindow popupWindow;
+    private ProgressDialog progressDialog;
     final long[] pattern = {0, 1000, 1000, 1000, 1000};
     public static Location centerLocation=null,adminLocation;
     public PopupWindow popupWindowDogs;
-    public Button buttonBus,buttonTime;
-    public String popUpBus [] = {"Anando","Baishakhi","Boshonto","Chittagong Road","Choitaly","Falguni","Hemonto","Ishakha","Kinchit","Khonika","Moitree/null","Srabon","Taranga","Ullash","Wari"};
+    private static ValueEventListener listener;
+    public Button buttonBus,buttonTime,buttonSearch;
+    public String popUpBus [] = {"Anando","Boishakhi","Boshonto","Chittagong Road","Choitaly","Falguni","Hemonto","Ishakha","Kinchit","Khonika","Moitree/null","Srabon","Taranga","Ullash","Wari"};
     //public String popUpTime [] = {"7:00 am","7:30 am","8:00 am","7:00 am","7:30 am","8:00 am"};
     private boolean locationUpdateState = false, permit = false, locationsettings = false, check = false;
     private LocationCallback locationCallback;
@@ -105,11 +108,11 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     private FloatingActionButton fab, fabt;
     private Location lastlocation;
     final HandlerThread handlerThread= new HandlerThread("RequestLocation");;
-    private LatLng currentLatLng = null, aftercameramove;
-    public static boolean flag = true,admin=false,user=false,finalLocation=false,alarmflag=true;
+    private static LatLng currentLatLng = null, aftercameramove,busLocation;
+    public static boolean flag = true,admin=false,user=false,finalLocation=false,alarmflag=true,srch=false;
     private Marker marker;
     private HashMap<String, Marker> mMarkers = new HashMap<>();
-    private int count = 0, call = 0,indexNumber=0;
+    private static  int count = 0, call = 0,indexNumber=0;
     private ImageView img;
     public static float dis;
     private Uri uri;
@@ -119,6 +122,11 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     private  AudioManager am;
     private AlertDialog.Builder dialog;
     private AlertDialog alert;
+    private LinearLayout linearLayout;
+    public static String adminselectionBus,adminselectionTime,userselectionBus,userselectionTime;
+    private FirebaseAuth mAuth;
+    private static DatabaseReference ref;
+    private FirebaseAuth.AuthStateListener firebaseAuthListener;
     DogsDropdownOnItemClickListener d= new DogsDropdownOnItemClickListener();
 
 
@@ -127,18 +135,107 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         //region oncreate declarations
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
         Log.d("statetracking", "onCreate");
 
+
+        View.OnClickListener handler = new View.OnClickListener() {
+            public void onClick(View v) {
+
+                switch (v.getId()) {
+
+                    case R.id.busBtn:
+                        buttonBus.setText(userselectionBus);
+                        popupWindowDogs = popupWindowDogs(v);
+                        popupWindowDogs.showAsDropDown(v);
+                        break;
+                    case R.id.timeBtn:
+                        // show the list view as dropdown
+                        buttonTime.setText(userselectionTime);
+                        if(buttonBus.getText().equals("BUS"))
+                            Toast.makeText(firstActivity.this,"Please select the name of bus ",Toast.LENGTH_LONG).show();
+                        else
+                        {
+                            //popupWindowDogs.dismiss();
+                            popupWindowDogs = popupWindowDogs(v);
+                            popupWindowDogs.showAsDropDown(v);
+                        }
+                        break;
+                    case R.id.searchBtn:
+                        locBus=0;
+                        if(GlobalClass.BusName.equals("Taranga"))
+                        {
+
+//                            ref.removeEventListener(listener);
+//                            //progressDialog.setMessage("Searching your bus..");
+//                            //progressDialog.show();
+//                            userselectionBus=GlobalClass.BusName;
+//                            userselectionTime=DogsDropdownOnItemClickListener.BusTime;
+//                            Log.d("cheque",userselectionBus+"  " +userselectionTime);
+//                            ref = FirebaseDatabase.getInstance().getReference();
+//
+//                            ref.child("Admin").child("Location")
+//                                    .child(userselectionBus)
+//                                    .child(userselectionTime)
+//                                    .addValueEventListener(listener);
+//
+//                            listener= new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                                    if(countMarker>0)
+//                                        marker.remove();
+//                                    Log.d("jobaid","firstactivity : asfw");
+//                                    Log.d("cheque",GlobalClass.BusName+" ** " +DogsDropdownOnItemClickListener.BusTime);
+//
+//
+//                                    setMarker(dataSnapshot);
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                }
+//                            };
+                            Intent intent= getIntent();
+
+                            intent.putExtra("name","user");
+                            intent.putExtra("BUSNAME",GlobalClass.BusName);
+                            intent.putExtra("TIME",DogsDropdownOnItemClickListener.BusTime);
+                            startActivity(intent);
+                            finish();
+
+
+
+                        }
+                        else
+                        {
+                            Toast.makeText(firstActivity.this,"Only Taranga Bus Tracking is available now",Toast.LENGTH_LONG).show();
+                        }
+
+                        break;
+                }
+            }
+        };
+
+        handlerThread.start();
+
+        // our button
+        buttonBus = (Button) findViewById(R.id.busBtn);
+        buttonTime=(Button)findViewById(R.id.timeBtn);
+        buttonSearch=(Button)findViewById(R.id.searchBtn);
+        buttonBus.setOnClickListener(handler);
+        buttonTime.setOnClickListener(handler);
+        buttonSearch.setOnClickListener(handler);
+
         centerLocation= new Location("");
-//        centerLocation.setLatitude(23.738185);
-//        centerLocation.setLongitude(90.372447);
         adminLocation = new Location("");
-//        adminLocation.setLatitude(23.739167);
-//        adminLocation.setLongitude(90.375430);
-        Log.d("ammu",String.valueOf(adminLocation.distanceTo(centerLocation)));
+        progressDialog = new ProgressDialog(this);
+        linearLayout=findViewById(R.id.linear);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -146,7 +243,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         img = (ImageView) findViewById(R.id.iconid);
-        Log.d("jobaid", "onCreate");
+        Log.d("jobaid", "firstactivity:onCreate");
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
                 drawer,
@@ -158,48 +255,66 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         fab = (FloatingActionButton) findViewById(R.id.fabloc);
         fabt = (FloatingActionButton) findViewById(R.id.fabtraffic);
 
-        //FloatingActionButton fabn=(FloatingActionButton)findViewById(R.id.fabnavigation);
         fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_location));
         fabt.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.traffic));
-
-        ConnectivityManager cm =
-                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if(!isNetworkConnected(this))
-        {
-            networkAlert(this);
-        }
 
 
         fab.setOnClickListener(this);
         fabt.setOnClickListener(this);
-        //fabn.setOnClickListener(this);
-
-
-
 
         //endregion
 
         if((getIntent().getStringExtra("name")).equals("admin"))
+        {
+            adminselectionBus=getIntent().getStringExtra("BUSNAME");
+            adminselectionTime=getIntent().getStringExtra("TIME");
             admin=true;
+        }
         if((getIntent().getStringExtra("name")).equals("user"))
+        {
+            userselectionBus = getIntent().getStringExtra("BUSNAME");
+            userselectionTime=getIntent().getStringExtra("TIME");
+            buttonBus.setText(userselectionBus);
+            buttonTime.setText(userselectionTime);
             user=true;
-
+            Log.d("parbo",userselectionBus + " " + userselectionTime);
+        }
 
         if(admin)
         {
 
-
-            Log.d("jobaid","admintrue");
+            linearLayout.setVisibility(View.GONE);
             adminloginToFirebase();
-
         }
         if(user)
         {
+            ref = FirebaseDatabase.getInstance().getReference();
+
+            listener= new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    if(countMarker>0 && marker!=null)
+                        marker.remove();
+                    Log.d("jobaid","firstactivity : asfw");
+                    //Log.d("cheque",GlobalClass.BusName+" ** " +DogsDropdownOnItemClickListener.BusTime);
+
+
+                    setMarker(dataSnapshot);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+            ref.child("Admin").child("Location")
+                    .child(userselectionBus)
+                    .child(userselectionTime)
+                    .addValueEventListener(listener);
             Log.d("him","them");
             img.setVisibility(View.GONE);
             userloginToFirebase();
-
         }
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -212,134 +327,84 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener((NavigationView.OnNavigationItemSelectedListener) this);
 
-        // initialize pop up window
-//        popupWindowDogs = popupWindowDogs();
 
-        View.OnClickListener handler = new View.OnClickListener() {
-            public void onClick(View v) {
-
-                switch (v.getId()) {
-
-                    case R.id.busBtn:
-                        // show the list view as dropdown
-                        //buttonTime.setText("TIME");
-                        popupWindowDogs = popupWindowDogs(v);
-                        popupWindowDogs.showAsDropDown(v, -5, 0);
-                        break;
-                    case R.id.timeBtn:
-                        // show the list view as dropdown
-                        if(buttonBus.getText().equals("BUS"))
-                            Toast.makeText(firstActivity.this,"Please select the name of bus first",Toast.LENGTH_LONG).show();
-                        else
-                        {
-                            popupWindowDogs = popupWindowDogs(v);
-                            popupWindowDogs.showAsDropDown(v, -5, 0);
-
-                        }
-                        break;
-                }
-            }
-        };
-
-        // our button
-        buttonBus = (Button) findViewById(R.id.busBtn);
-        buttonTime=(Button)findViewById(R.id.timeBtn);
-        buttonBus.setOnClickListener(handler);
-        buttonTime.setOnClickListener(handler);
-
-
-        handlerThread.start();
 
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("AdminLocation");
-
-
-//                Location abc = new Location("");
-//                abc.setLatitude(23.738208);
-//                abc.setLongitude(90.372509);
-//
-//                Location abcd = new Location("");
-//                abcd.setLatitude(23.739161);
-//                abcd.setLongitude(90.375492);
+                ref = FirebaseDatabase.getInstance().getReference();
 
                 lastlocation = locationResult.getLastLocation();
-//                float dis= abcd.distanceTo(abc);
-//                Toast.makeText(firstActivity.this,String.valueOf(dis),Toast.LENGTH_LONG).show();
+
                 ((GlobalClass)firstActivity.this.getApplication()).lat=lastlocation.getLatitude();
                 ((GlobalClass)firstActivity.this.getApplication()).lon=lastlocation.getLongitude();
 
-
-                //Toast.makeText(firstActivity.this,lastlocation.toString(),Toast.LENGTH_LONG).show();
-//                if(finalLocation)
-//                currentLatLng = new LatLng(aftercameramove.latitude, aftercameramove.longitude);
-//                else
-
-
                 currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
-
-                //Log.d("jobaid", "callback");
                 if(admin)
                 {
-                    //Log.d("jobaid","b4callback");
+                    Log.d("jobaid","firstactivity : b4callback");
                     if(finalLocation)
                     {
-                        /// location by camere movement
+                        /// location by camera movement
                         AdminLocation al= new AdminLocation(aftercameramove.latitude,aftercameramove.longitude);
-                        /// AdminLocation al= new AdminLocation(lastlocation.getLatitude(), lastlocation.getLongitude());
-                        //Log.d("jobaid", "callback2");
-                        ref.setValue(al);
+                        Toast.makeText(firstActivity.this,"GPS signal is transmitting",Toast.LENGTH_SHORT).show();
+                        Log.d("jobaid", "firstactivity : callback2");
+                        ref.child("Admin").child("Location")
+                                .child(adminselectionBus)
+                                .child(adminselectionTime)
+                                .setValue(al);
                     }
                     else
                     {
+                        Toast.makeText(firstActivity.this,"GPS signal is transmitting",Toast.LENGTH_LONG).show();
                         AdminLocation al= new AdminLocation(lastlocation.getLatitude(),lastlocation.getLongitude());
-                        //Log.d("jobaid", "callback2");
-                        ref.setValue(al);
+                        Log.d("jobaid", "firstactivity : callback2");
+                        ref.child("Admin").child("Location")
+                                .child(adminselectionBus)
+                                .child(adminselectionTime)
+                                .setValue(al);
                     }
-
-                    //ref.child("latitude").setValue(lastlocation.getLatitude());
-                    //ref.child("longitude").setValue(lastlocation.getLongitude());
-
                 }
-                if(user)
-                {
-
-                    //Log.d("jobaid","inside user");
-                    ref.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if(countMarker>0)
-                                marker.remove();
-                            //Log.d("jobaid","asfw");
-                            setMarker(dataSnapshot);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-                }
-//                if(flag)
+//                if(user && srch)
 //                {
-//                    flag=false;
-//                    markerPlacing(currentLatLng);
+//
+//                    listener= new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                            if(countMarker>0)
+//                                marker.remove();
+//                            Log.d("jobaid","firstactivity : asfw");
+//                            Log.d("cheque",String.valueOf(call)+"  "+ GlobalClass.BusName+" ** " +DogsDropdownOnItemClickListener.BusTime);
 //
 //
+//                            setMarker(dataSnapshot);
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                        }
+//                    };
+//                    //Log.d("cheque",userselectionBus+" " +userselectionTime);
+//                    //progressDialog.dismiss();
+//                    Log.d("jobaid","firstactivity : inside user");
+//                    ref.child("Admin").child("Location")
+//                            .child(userselectionBus)
+//                            .child(userselectionTime)
+//                            .addValueEventListener(listener);
 //                }
 
-                //marker.remove();
             }
         };
 
         createLocationRequest();
 
-
     }
 
     private void createLocationRequest() {
-        Log.d("jobaid", "createlocation");
+        Log.d("jobaid", "firstactivity: createLocationRequest");
 
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -467,8 +532,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("jobaid", "onStart");
-        Log.d("statetracking", "onStart");
+        Log.d("jobaid", "firstactivity : onStart");
 
     }
 
@@ -477,16 +541,59 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         super.onResume();
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        Log.d("jobaid", "onResume");
-        Log.d("statetracking", "onResume");
-
+        Log.d("jobaid", "firstactivity : onResume");
+        // works for walton
+        // startLocationUpdates();
         if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Log.d("jobaid", "b4 locationupdate");
+            Log.d("jobaid", "firstactivity: on Resume [b4 locationupdate]");
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+                fusedLocationProviderClient.getLastLocation()
+                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+
+                                Log.d("jobaid", "firstactivity: on Resume [onSuccess]");
+                                if (location != null) {
+                                    Log.d("jobaid", "firstactivity: on Resume [location!=null]");
+                                    lastlocation = location;
+                                    LatLng currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
+                                    markerPlacing(currentLatLng);
+                                }
+
+                            }
+                        });
+            }
             startLocationUpdates();
-        } else
+      }
+            else
             alertMethod();
 
+    }
 
+    private void alertMethod() {
+
+        Log.d("jobaid", "firstactivity : alertMethod [alertdialog]");
+        final Context context = firstActivity.this;
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle(R.string.GPS_unavailable);
+        dialog.setMessage(R.string.GPS_msg);
+
+        dialog.setPositiveButton("GPS settings", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                //check = true;
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                context.startActivity(intent);
+
+            }
+        });
+        alert = dialog.create();
+        alert.show();
+        alert.setCanceledOnTouchOutside(false);
+        alert.setCancelable(false);
     }
 
     private void startLocationUpdates() {
@@ -495,14 +602,14 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         }
 
-        Log.d("jobaid", "startLocationUpdate");
+        Log.d("jobaid", "firstactivity : startLocationUpdate");
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, handlerThread.getLooper());
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        //Log.d("jobaid", "onMapReady");
+        //Log.d("jobaid", "firstactivity : onMapReady");
         mMap = googleMap;
         if(user)mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.setOnMarkerClickListener(this);
@@ -517,11 +624,12 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
     private void setUpMap() {
 
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         }
         else {
-            Log.d("jobaid", "setup success");
+            Log.d("jobaid", "firstactivity : setUpMap [setup success]");
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -531,9 +639,9 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                         @Override
                         public void onSuccess(Location location) {
 
-                            Log.d("jobaid", "onSuccess");
+                            Log.d("jobaid", "firstactivity : setUpMap [onSuccess]");
                             if (location != null) {
-                                Log.d("jobaid", "setup deep success");
+                                Log.d("jobaid", "firstactivity : setUpMap  [deep success]");
                                 lastlocation = location;
                                 currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
                                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));
@@ -548,9 +656,9 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onCameraMoveCanceled() {
 
-        Log.d("jobaid", "ouside onCamereMoveCanceled");
+        Log.d("jobaid", "firstactivity : on CameraMoveCanceled [ouside onCamereMoveCanceled]");
         if (flag) {
-            Log.d("jobaid", "onCamereMoveCanceled");
+            Log.d("jobaid", "firstactivity : onCamereMoveCanceled");
             //flag=false;
             zoom= mMap.getCameraPosition().zoom;
             markerPlacing(mMap.getCameraPosition().target);
@@ -560,63 +668,37 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
     private void markerPlacing(LatLng currentLatLng) {
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
 
             return;
         }
 
-
-//        MarkerOptions mk = new MarkerOptions();
-//        mk.draggable(false);
-//        mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-//        //mk.getIcon()
-//
-//
-//         marker = mMap.addMarker(mk
-//                .position(currentLatLng)
-//                .title("jobaid"));
-//
-//        marker.showInfoWindow();
-
-        //marker.setSnippet("hello");
-       // Log.d("jobaid", "markerPlacing");
         if(user)
         {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,15));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,zoom));
 
         }
         if(admin)
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, zoom));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, zoom));
 
 
     }
 
     private void setMarker(DataSnapshot dataSnapshot) {
-        // When a location update is received, put or update
-        // its value in mMarkers, which contains all the markers
-        // for locations received, so that we can build the
-        // boundaries required to show them all on the map at once
-//        String key = dataSnapshot.getKey();
-        // HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
-
-        //Log.d("jobaid","inside setMarkerccv");
 
         double  lat,lng;
         LatLng la;
-
         countMarker++;
+        Log.d("mi","six");
         lat= (double) dataSnapshot.child("latitude").getValue();
         lng = (double) dataSnapshot.child("longitude").getValue();
+        busLocation= new LatLng(lat,lng);
         adminLocation.setLatitude(lat);
         adminLocation.setLongitude(lng);
-        //Log.d("like","b4entering");
         if(centerLocation!=null)
         {
             dis=adminLocation.distanceTo(centerLocation);
             Log.d("like",String.valueOf(centerLocation.getLatitude())+ ","+String.valueOf(centerLocation.getLongitude()));
-            //Log.d("like",String.valueOf(adminLocation.getLatitude())+ ","+String.valueOf(adminLocation.getLongitude()));
-
-            Log.d("like",String.valueOf(adminLocation.distanceTo(centerLocation))+ "  afterentering  "+String.valueOf(GeofenceSettings1.radius));
 
             if(dis<=GeofenceSettings1.radius )
             {
@@ -636,7 +718,6 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
         la = new LatLng(lat, lng);
 
-        //marker.remove();
         MarkerOptions mk = new MarkerOptions();
         mk.draggable(false);
         mk.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
@@ -645,7 +726,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         if(locBus%2==0&&user)
         {
             Log.d("vejal","fao");
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(la, zoom));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(la, zoom));
             freeze=true;
         }
 
@@ -732,7 +813,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void createNotificationChannel() {
-        Log.d("jobaid", "Intent:createNotificationChannel");
+        Log.d("jobaid", "firstactivity: createNotificationChannel");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "channel one";
             String description = "this is channel one method";
@@ -748,11 +829,8 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
     private   void busGeofenceAlertDialog()  {
 
-        Log.d("jobaid", "first:alertdialog");
-        //Context context = getApplicationContext();
-
+        Log.d("jobaid", "firstactivity : alertdialog");
         dialog = new AlertDialog.Builder(this);
-        Log.d("jobaid","first:fox");
 
         dialog.setTitle("Bus Notification");
         dialog.setIcon(R.drawable.bus_enter);
@@ -764,14 +842,9 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                //check = true;
                 defaultRingtone.stop();
                 myVib.cancel();
-                //finish();
-//                Intent intent = new Intent(firstActivity.this,firstActivity.class);
-//                if(firstActivity.admin)intent.putExtra("name","admin");
-//                else if(firstActivity.user)intent.putExtra("name","user");
-//                startActivity(intent);
+
             }
         });
         Log.d("vox","rashidul");
@@ -814,49 +887,9 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("jobaid", "onPauselk");
-        Log.d("statetracking", "onPause");
-
-
-
-
-        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
-        {
-            alert.dismiss();
-            alert.cancel();
-        }
-        if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-                fusedLocationProviderClient.getLastLocation()
-                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-
-                                Log.d("jobaid", "onSuccess");
-                                if (location != null) {
-                                    Log.d("jobaid", "setup deep success");
-                                    lastlocation = location;
-                                    LatLng currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
-                                    markerPlacing(currentLatLng);
-                                }
-
-                            }
-                        });
-            }
-        }
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-
-    }
-
-    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        Log.d("jobaid","navigation outside");
+        Log.d("jobaid","firstactivity : onNavigationItemSelectd [navigation outside]");
         int id = item.getItemId();
         Intent intent = null;
 
@@ -864,13 +897,11 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
             case R.id.nav_busReminder:
                 oncealarm=true;
 
-                Log.d("jobaid","navigation inside switch");
                 intent = new Intent(this,GeofenceSettings1.class);
                 intent.putExtra("purpose","busReminder");
                 startActivity(intent);
                 break;
             case R.id.nav_locationAlarm:
-                Log.d("jobaid","navigation inside switch");
                 intent = new Intent(this,GeofenceSettings1.class);
                 intent.putExtra("purpose","locationAlarm");
                 startActivity(intent);
@@ -920,16 +951,25 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         // Authenticate with Firebase, and request location updates
         String email = "test123@gmail.com";
         String password = "test123";
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.signInWithEmailAndPassword(
                 email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>(){
             @Override
             public void onComplete(Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Log.d("jobaid", "firebase auth success");
+                    Toast.makeText(firstActivity.this,"successful",Toast.LENGTH_LONG).show();
+
+                    Log.d("jobaid", "firstactivity : adminloginToFirebase [firebase auth success]");
                     createLocationRequest();
                 } else {
-                    Log.d("jobaid", "firebase auth failed");
+                    Toast.makeText(firstActivity.this,"Not successful",Toast.LENGTH_LONG).show();
+                    Log.d("jobaid", "firstactivity : adminloginToFirebase [firebase auth failed]");
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("mistake",e.getLocalizedMessage());
             }
         });
     }
@@ -944,9 +984,9 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
             public void onComplete(Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     subscribeToUpdates();
-                    Log.d("jobaid", "firebase auth success");
+                    Log.d("jobaid", "firstactivity : userloginToFirebase [firebase auth success]");
                 } else {
-                    Log.d("jobaid", "firebase auth failed");
+                    Log.d("jobaid", "firstactivity: userloginToFirebase [firebase auth failed]");
                 }
             }
         });
@@ -954,67 +994,14 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
     private void subscribeToUpdates() {
         // Functionality coming next step
-        Log.d("jobaid","subscribeToUpdates");
-    }
-
-    private void networkAlert(firstActivity firstActivity) {
-
-        Log.d("jobaid", "networkalert");
-        final Context context = firstActivity.this;
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setMessage(R.string.network_msg);
-        dialog.setTitle(R.string.network_unavailable);
-        dialog.setPositiveButton("Network settings", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                check = true;
-                Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-                context.startActivity(intent);
-            }
-        });
-        alert = dialog.create();
-        alert.show();
-
-    }
-
-    public static boolean isNetworkConnected(Context context) {
-
-        Log.d("jobaid","outside isNetworkConnectec");
-        boolean result = false;
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (cm != null) {
-                NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
-                if (capabilities != null) {
-                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                        result = true;
-                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                        result = true;
-                    }
-                }
-            }
-        } else {
-            if (cm != null) {
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                if (activeNetwork != null) {
-                    // connected to the internet
-                    if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
-                        result = true;
-                    } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
-                        result = true;
-                    }
-                }
-            }
-        }
-        return result;
+        Log.d("jobaid","firstactivity :subscribeToUpdates");
     }
 
     public PopupWindow popupWindowDogs(View v) {
 
-        Log.d("joabid","popupWindows");
+        Log.d("jobaid","firstactivity : popupWindows");
         // initialize a pop up window type
-        PopupWindow popupWindow = new PopupWindow(this);
+         popupWindow = new PopupWindow(this);
 
         // the drop down list is a list view
         final ListView listViewDogs = new ListView(this);
@@ -1024,16 +1011,14 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         if(v.getId()==R.id.busBtn)
         {
             listViewDogs.setAdapter(dogsAdapter(popUpBus));
-            listViewDogs.setDivider(null);
+
         }
         else if(v.getId()==R.id.timeBtn)
         {
-            Log.d("jobaid","before");
             Log.d("jobaid",((GlobalClass)firstActivity.this.getApplication()).BusName);
-            Log.d("jobaid","after");
             BusAndTime b = new BusAndTime(((GlobalClass)firstActivity.this.getApplication()).BusName);
             listViewDogs.setAdapter(dogsAdapter(b.getTime()));
-            listViewDogs.setDivider(null);
+
         }
 
         // set the item click listener
@@ -1046,7 +1031,6 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         popupWindow.setHeight((int)(height*.4));
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-        //popupWindow.setBackgroundDrawable();
 
         // set the list view as pop up window content
         popupWindow.setContentView(listViewDogs);
@@ -1062,19 +1046,21 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
 
+                View view = super.getView(position,convertView,parent);
+
+                ViewGroup.LayoutParams params = view.getLayoutParams();
+
+                // Set the height of the Item View
+                params.height = 80;
+                view.setLayoutParams(params);
                 // setting the ID and text for every items in the list
                 String item = getItem(position);
-                //String[] itemArr = item.split("::");
-                //String text = itemArr[0];
-                //String id = itemArr[1];
 
                 // visual settings for the list item
                 TextView listItem = new TextView(firstActivity.this);
 
                 listItem.setText(item);
-                //listItem.setTag(id);
-                listItem.setHeight(150);
-                listItem.setMinHeight(150);
+
                 listItem.setTextSize(20);
                 listItem.setPadding(10, 10, 10, 10);
                 listItem.setTextColor(Color.BLACK);
@@ -1106,26 +1092,29 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void alertMethod() {
-
-        Log.d("jobaid", "alertdialog");
-        final Context context = firstActivity.this;
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setTitle(R.string.GPS_unavailable);
-        dialog.setMessage(R.string.GPS_msg);
-
-        dialog.setPositiveButton("GPS settings", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                check = true;
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                context.startActivity(intent);
-            }
-        });
-        alert = dialog.create();
-        alert.show();
-    }
+//    private void alertMethod() {
+//
+//        Log.d("jobaid", "firstactivity : alertMethod [alertdialog]");
+//        final Context context = firstActivity.this;
+//        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+//        dialog.setTitle(R.string.GPS_unavailable);
+//        dialog.setMessage(R.string.GPS_msg);
+//
+//        dialog.setPositiveButton("GPS settings", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//                check = true;
+//                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                context.startActivity(intent);
+//
+//            }
+//        });
+//        alert = dialog.create();
+//        alert.show();
+//        alert.setCanceledOnTouchOutside(false);
+//        alert.setCancelable(false);
+//    }
 
     @Override
     public void onClick(View v) {
@@ -1133,31 +1122,36 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         if(v.getId()==R.id.fabloc && admin)
         {
             zoom=15f;
-            markerPlacing(currentLatLng);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,zoom));
 
         }
 
         if (v.getId() == R.id.fabloc&&user) {
             locBus++;
 
-            if(locBus%2==1)
-            {
+                 if(locBus==1)return ;
+                if(locBus%2==1)
+                {
+
+                    Log.d("hayre","amar " + locBus);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,zoom));
+                    fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_bus));
+                    markerPlacing(currentLatLng);
+                    freeze=false;
+                }
+                else
+                {
+
+                    Log.d("hayre","kopal " + locBus);
+                    zoom=15f;
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(busLocation,zoom));
+                    fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_location));
+
+                    freeze=true;
+
+                }
 
 
-                fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_bus));
-                markerPlacing(currentLatLng);
-                freeze=false;
-            }
-            else
-            {
-                zoom=15f;
-                fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_location));
-                freeze=true;
-
-            }
-
-
-            //
         }
         if (v.getId() == R.id.fabtraffic) {
 
@@ -1179,14 +1173,14 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
             if (mMap.isTrafficEnabled())
             {
                 mMap.setTrafficEnabled(false);
-                Log.d("jobaid","disabled");
+                Log.d("jobaid","firstactivity : onclick [disabled]");
 
             }
             else
             {
                 mMap.setTrafficEnabled(true);
 
-                Log.d("jobaid","enabled");
+                Log.d("jobaid","firstactivity : onclick [enabled]");
 
             }
         }
@@ -1235,17 +1229,16 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d("statetracking", "onStop");
+        Log.d("jobaid", "firstactivity  : onStop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("statetracking", "onDestroy");
+        Log.d("statetracking", "firstactivity : onDestroy");
 
     }
 }

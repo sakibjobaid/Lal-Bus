@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RemindMeMyself</string>
+    <string name="app_name">Lal Bus</string>
     <string name="title_activity_first">MapMyself</string>
     <string name="bus">BUS</string>
     <string name="time">TIME</string>
@@ -23,6 +23,7 @@
     <string name="radius_description">%1$s meters</string>
     <string name="nav_open_drawer">open drawer</string>
     <string name="nav_close_drawer">close drawer</string>
+    <string name="marker_tap">Tap on the marker to see stoppage location.</string>
 
     <string name="reminder_removal_alert">Remove reminder?</string>
     <string name="reminder_removal_alert_positive">OK</string>
@@ -35,11 +36,21 @@
 
 
     <string-array name="BUS">
-        <item>BUS</item>
-        <item>Taranga</item>
-        <item>Choitali</item>
-        <item>Ullash</item>
+        <item>Anando</item>
         <item>Boishakhi</item>
+        <item>Boshonto</item>
+        <item>Chittagong Road</item>
+        <item>Choitaly</item>
+        <item>Falguni</item>
+        <item>Hemonto</item>
+        <item>Ishakha</item>
+        <item>Kinchit</item>
+        <item>Khonika</item>
+        <item>Moitree</item>
+        <item>Srabon</item>
+        <item>Taranga</item>
+        <item>Ullash</item>
+        <item>Wari</item>
 
     </string-array>
 

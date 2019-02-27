@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -28,13 +27,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".StartActiviy"
-            android:label="StartPage">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:label="StartPage" />
         <activity
             android:name=".GeofenceSettings1"
             android:parentActivityName=".StartActiviy" />
@@ -42,24 +35,28 @@
         <service
             android:name=".GeofenceTransitionsIntentService"
             android:enabled="true"
-            android:exported="false">
-
-        </service>
+            android:exported="false" />
 
         <activity
             android:name=".RecylerViewActivity"
-            android:parentActivityName=".StartActiviy">
-
-        </activity>
+            android:parentActivityName=".StartActiviy" />
         <activity
             android:name=".ScheduleImage"
-            android:parentActivityName=".StartActiviy">
+            android:parentActivityName=".StartActiviy" />
+        <activity
+            android:name=".MapsActivity"
+            android:parentActivityName=".StartActiviy" />
+        <activity android:name=".Splashscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name=".MapsActivity"
-            android:parentActivityName=".StartActiviy">
-
-        </activity>
+        <activity android:name=".AdminLoginPage" />
+        <activity android:name=".UserLoginPage" />
+        <activity android:name=".testing" />
+        <activity android:name=".AdminOptions"></activity>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package com.example.asus.remindmemyself;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -11,7 +12,7 @@ import android.widget.TextView;
 
 public class DogsDropdownOnItemClickListener implements OnItemClickListener {
 
-
+      public static String BusTime="7:00 up";
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
@@ -33,13 +34,20 @@ public class DogsDropdownOnItemClickListener implements OnItemClickListener {
         String selectedItemText = ((TextView) v).getText().toString();
         //setBusName(selectedItemText);
         if(selectedItemText.contains(":"))
+        {
+            firstActivity.popupWindow.dismiss();
             mainActivity.buttonTime.setText(selectedItemText);
+            BusTime=selectedItemText;
+            Log.d("problem1",selectedItemText);
+        }
 
         else
         {
+            firstActivity.popupWindow.dismiss();
             GlobalClass.BusName=selectedItemText;
+            Log.d("problem1",selectedItemText);
             mainActivity.buttonBus.setText(selectedItemText);
-            mainActivity.buttonTime.setText("TIME");
+
 
         }
 
