@@ -23,6 +23,7 @@
     <string name="radius_description">%1$s meters</string>
     <string name="nav_open_drawer">open drawer</string>
     <string name="nav_close_drawer">close drawer</string>
+    <string name="admin_mode">You are in admin mode.</string>
     <string name="marker_tap">Tap on the marker to see stoppage location.</string>
 
     <string name="reminder_removal_alert">Remove reminder?</string>

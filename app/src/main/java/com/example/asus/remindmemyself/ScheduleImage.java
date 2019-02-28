@@ -28,7 +28,7 @@ public class ScheduleImage extends AppCompatActivity {
         img= (ImageView) findViewById(R.id.image);
         if(name.equals("Taranga"))
         {
-
+            this.setTitle(name);
             img.setBackgroundResource(R.drawable.taranga);
         }
     }

@@ -56,7 +56,15 @@
         <activity android:name=".AdminLoginPage" />
         <activity android:name=".UserLoginPage" />
         <activity android:name=".testing" />
-        <activity android:name=".AdminOptions"></activity>
+        <activity android:name=".AdminOptions" />
+
+        <receiver
+            android:name=".MyReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity android:name=".LocationAlertActivity" />
+        <activity android:name=".BusReminderAlertActivity"></activity>
     </application>
 
 </manifest>

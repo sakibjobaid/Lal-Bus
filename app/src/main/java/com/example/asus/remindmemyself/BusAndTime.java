@@ -17,7 +17,7 @@ public class BusAndTime {
             String time[] = {"6:50 up","7:50 up","8:50 up","12:15 down","1:05 down","2:30 down","4:05 down","5:10 down"};
             return time;
         }
-        else if(name.equals("Baishakhi"))
+        else if(name.equals("Boishakhi"))
         {
             String time[] = {"6:30 up","6:50 up","7:30 up","8:00 up","9:00 up","9:45 up","12:30 down","1:15 down","2:20 down","3:30 down","4:30 down","5:30 down"};
             return time;

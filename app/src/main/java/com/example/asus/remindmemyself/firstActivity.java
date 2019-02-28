@@ -1,6 +1,7 @@
 package com.example.asus.remindmemyself;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -20,6 +21,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Vibrator;
 import android.provider.Settings;
@@ -37,6 +39,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +97,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     int height,width;
     public static PopupWindow popupWindow;
     private ProgressDialog progressDialog;
-    final long[] pattern = {0, 1000, 1000, 1000, 1000};
+    //final long[] pattern = {0, 1000, 1000};
     public static Location centerLocation=null,adminLocation;
     public PopupWindow popupWindowDogs;
     private static ValueEventListener listener;
@@ -107,6 +110,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     private LocationRequest locationRequest;
     private FloatingActionButton fab, fabt;
     private Location lastlocation;
+    private Menu menu;
     final HandlerThread handlerThread= new HandlerThread("RequestLocation");;
     private static LatLng currentLatLng = null, aftercameramove,busLocation;
     public static boolean flag = true,admin=false,user=false,finalLocation=false,alarmflag=true,srch=false;
@@ -114,6 +118,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     private HashMap<String, Marker> mMarkers = new HashMap<>();
     private static  int count = 0, call = 0,indexNumber=0;
     private ImageView img;
+    private TextView tv;
     public static float dis;
     private Uri uri;
     private LocationManager lm;
@@ -141,6 +146,9 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_first);
         Log.d("statetracking", "onCreate");
 
+        tv= findViewById(R.id.mywidget);
+        tv.setText("Your are in admin mode. "+"              "+" You are in admin mode.");
+        tv.setSelected(true);
 
         View.OnClickListener handler = new View.OnClickListener() {
             public void onClick(View v) {
@@ -200,15 +208,13 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 //
 //                                }
 //                            };
-                            Intent intent= getIntent();
+                            Intent intent= new Intent(firstActivity.this,firstActivity.class);
 
                             intent.putExtra("name","user");
                             intent.putExtra("BUSNAME",GlobalClass.BusName);
                             intent.putExtra("TIME",DogsDropdownOnItemClickListener.BusTime);
                             startActivity(intent);
                             finish();
-
-
 
                         }
                         else
@@ -238,6 +244,8 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -266,14 +274,19 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
         if((getIntent().getStringExtra("name")).equals("admin"))
         {
+
             adminselectionBus=getIntent().getStringExtra("BUSNAME");
             adminselectionTime=getIntent().getStringExtra("TIME");
+            this.setTitle(adminselectionBus+" "+adminselectionTime);
             admin=true;
         }
         if((getIntent().getStringExtra("name")).equals("user"))
         {
+            tv.setVisibility(View.GONE);
             userselectionBus = getIntent().getStringExtra("BUSNAME");
             userselectionTime=getIntent().getStringExtra("TIME");
+            this.setTitle(userselectionBus+" "+userselectionTime);
+
             buttonBus.setText(userselectionBus);
             buttonTime.setText(userselectionTime);
             user=true;
@@ -325,6 +338,11 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        menu = navigationView.getMenu();
+        if(admin)
+        {
+            menu.findItem(R.id.nav_busReminder).setVisible(false);
+        }
         navigationView.setNavigationItemSelectedListener((NavigationView.OnNavigationItemSelectedListener) this);
 
 
@@ -644,13 +662,44 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                                 Log.d("jobaid", "firstactivity : setUpMap  [deep success]");
                                 lastlocation = location;
                                 currentLatLng = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
-                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));
+
+                                if(locBus==0)
+                                {
+                                    final Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                            //Toast.makeText(firstActivity.this,currentLatLng.toString()+" sakib",Toast.LENGTH_LONG).show();
+                                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));
+
+                                        }
+                                    }, 2000);
+                                }
+                                else
+                                {
+                                    final Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                           // Toast.makeText(firstActivity.this,currentLatLng.toString()+" sakib",Toast.LENGTH_LONG).show();
+                                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));
+
+                                        }
+                                    }, 1000);
+                                }
+
+
                             }
 
                         }
                     });
 
         }
+        if(busLocation!=null)
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(busLocation,zoom));
+
     }
 
     @Override
@@ -707,8 +756,13 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                 if(oncealarm )
                 {
                     oncealarm=false;
-                    busGeofenceAlarm();
-                    busGeofenceAlertDialog();
+                    Intent intent1= new Intent(this,MyReceiver.class);
+                    intent1.putExtra("name","LocationAlarm");
+                    PendingIntent p= PendingIntent.getBroadcast(this,0,intent1,0);
+                    AlarmManager am= (AlarmManager)getSystemService(ALARM_SERVICE);
+                    am.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),p);
+                    //busGeofenceAlarm();
+                    //busGeofenceAlertDialog();
                     notification();
                 }
 
@@ -850,6 +904,12 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         Log.d("vox","rashidul");
         alert =dialog.create();
         alert.show();
+//        alert.show();
+//        if (!firstActivity.this.isFinishing()){
+//            alert.show();
+//        }
+//        else                     alert.show();
+
         alert.setCanceledOnTouchOutside(false);
         alert.setCancelable(false);
     }
@@ -864,27 +924,49 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         if(am.getRingerMode()== AudioManager.RINGER_MODE_NORMAL)
         {
             defaultRingtone.play();
-            myVib.vibrate(pattern,index());
+            //myVib.vibrate(pattern,0);
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(myVib.hasVibrator())
+                    {
+                        alert.dismiss();
+                        alert.cancel();
+                        Log.d("oops","oin");
+                        myVib.cancel();
+                        defaultRingtone.stop();
+                    }
+
+                }
+            },20000);
         }
         else if(am.getRingerMode()==AudioManager.RINGER_MODE_VIBRATE || am.getRingerMode()==AudioManager.RINGER_MODE_SILENT)
         {
 
-            myVib.vibrate(pattern,index());
+            Log.d("oops","oops");
+            defaultRingtone.play();
+            //myVib.vibrate(pattern,0);
+
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                      if(myVib.hasVibrator())
+                      {
+                          Log.d("oops","oin");
+
+                          alert.dismiss();
+                          alert.cancel();
+                          myVib.cancel();
+                      }
+
+                }
+            }, 20000);
 
         }
     }
 
-    private int index() {
-
-        ++indexNumber;
-        if(indexNumber==45)
-        {
-            alert.cancel();
-            alert.dismiss();
-            return -1;
-        }
-        else return 0;
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -1127,12 +1209,23 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         }
 
         if (v.getId() == R.id.fabloc&&user) {
-            locBus++;
+            ++locBus;
 
-                 if(locBus==1)return ;
+                 if(locBus==1)
+                 {
+                     final Handler handler = new Handler();
+                     handler.postDelayed(new Runnable() {
+                         @Override
+                         public void run() {
+
+                             // Toast.makeText(firstActivity.this,currentLatLng.toString()+" sakib",Toast.LENGTH_LONG).show();
+                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(busLocation, 15f));
+
+                         }
+                     }, 1000);
+                 }
                 if(locBus%2==1)
                 {
-
                     Log.d("hayre","amar " + locBus);
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,zoom));
                     fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_bus));
@@ -1232,6 +1325,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onStop() {
         super.onStop();
+
         Log.d("jobaid", "firstactivity  : onStop");
     }
 

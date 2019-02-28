@@ -97,7 +97,23 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/mywidget"
+                android:layout_margin="20dp"
+                android:textStyle="bold|normal"
+                android:textSize="20dp"
 
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:textColor="@color/border"
+                android:text="@string/admin_mode"
+                android:singleLine="true" />
 
 
 
