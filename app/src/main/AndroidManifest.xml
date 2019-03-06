@@ -64,7 +64,17 @@
             android:exported="false" />
 
         <activity android:name=".LocationAlertActivity" />
-        <activity android:name=".BusReminderAlertActivity"></activity>
+        <activity android:name=".BusReminderAlertActivity" />
+
+        <service
+            android:name=".TrackerService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".BusTrackerService"
+            android:enabled="true"
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 public class DogsDropdownOnItemClickListener implements OnItemClickListener {
 
-      public static String BusTime="7:00 up";
+      //public static String BusTime="7:00 up";
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
@@ -37,7 +37,7 @@ public class DogsDropdownOnItemClickListener implements OnItemClickListener {
         {
             firstActivity.popupWindow.dismiss();
             mainActivity.buttonTime.setText(selectedItemText);
-            BusTime=selectedItemText;
+            GlobalClass.BusTime=selectedItemText;
             Log.d("problem1",selectedItemText);
         }
 

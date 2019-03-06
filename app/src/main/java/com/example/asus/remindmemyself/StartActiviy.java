@@ -26,6 +26,8 @@ public class StartActiviy extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("jobaid","StartActivity:onCreate");
+
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 //        if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -46,7 +48,7 @@ public class StartActiviy extends AppCompatActivity implements View.OnClickListe
 
     public static boolean isNetworkConnected(Context context) {
 
-        Log.d("jobaid","firstactivity: is NetworkConnected [outside isNetworkConnected]");
+        Log.d("jobaid","StartActivity: is NetworkConnected [outside isNetworkConnected]");
         boolean result = false;
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -78,7 +80,7 @@ public class StartActiviy extends AppCompatActivity implements View.OnClickListe
 
     private void networkAlert(StartActiviy firstActivity) {
 
-        Log.d("jobaid", "firstactivity : networkalert");
+        Log.d("jobaid", "Startactivity : networkalert");
         final Context context =StartActiviy.this;
         dialog = new AlertDialog.Builder(context);
         dialog.setMessage(R.string.network_msg);
@@ -101,7 +103,7 @@ public class StartActiviy extends AppCompatActivity implements View.OnClickListe
 
     private void alertMethod() {
 
-        Log.d("jobaid", "firstactivity : alertMethod [alertdialog]");
+        Log.d("jobaid", "Startactivity : alertMethod [alertdialog]");
         final Context context = StartActiviy.this;
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle(R.string.GPS_unavailable);
@@ -133,6 +135,8 @@ public class StartActiviy extends AppCompatActivity implements View.OnClickListe
         {
             //intent= new Intent(this,firstActivity.class);
             //intent.putExtra("name","admin");
+            Log.d("jobaid","StartActivity:adminClicked");
+
             Toast.makeText(this,"button clicked",Toast.LENGTH_LONG).show();
             intent= new Intent(this,AdminLoginPage.class);
             startActivity(intent);
@@ -142,6 +146,7 @@ public class StartActiviy extends AppCompatActivity implements View.OnClickListe
         {
            // intent= new Intent(this,firstActivity.class);
             //intent.putExtra("name","user");
+            Log.d("jobaid","StartActivity:userClicked");
             intent= new Intent(this,UserLoginPage.class);
             startActivity(intent);
             finish();
