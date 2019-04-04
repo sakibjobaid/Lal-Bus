@@ -24,56 +24,89 @@
         <activity
             android:name=".firstActivity"
             android:label="@string/title_activity_first"
+            android:parentActivityName=".StartActiviy"
             android:screenOrientation="portrait" />
         <activity
             android:name=".StartActiviy"
-            android:label="StartPage" />
+            android:label="StartPage"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".GeofenceSettings1"
-            android:parentActivityName=".StartActiviy" />
-
-        <service
-            android:name=".GeofenceTransitionsIntentService"
-            android:enabled="true"
-            android:exported="false" />
-
+            android:parentActivityName=".StartActiviy"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".RecylerViewActivity"
-            android:parentActivityName=".StartActiviy" />
+            android:parentActivityName=".StartActiviy"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ScheduleImage"
-            android:parentActivityName=".StartActiviy" />
+            android:parentActivityName=".StartActiviy"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MapsActivity"
-            android:parentActivityName=".StartActiviy" />
-        <activity android:name=".Splashscreen">
+            android:parentActivityName=".StartActiviy"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Splashscreen"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AdminLoginPage" />
-        <activity android:name=".UserLoginPage" />
-        <activity android:name=".testing" />
-        <activity android:name=".AdminOptions" />
+        <activity
+            android:name=".AdminLoginPage"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UserLoginPage"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".testing"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AdminOptions"
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name=".MyReceiver"
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".LocationAlertActivity" />
-        <activity android:name=".BusReminderAlertActivity" />
+        <activity
+            android:name=".LocationAlertActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".BusReminderAlertActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".TrackerService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            android:stopWithTask="false" />
         <service
             android:name=".BusTrackerService"
             android:enabled="true"
+            android:exported="false"
+            android:stopWithTask="false" />
+        <service
+            android:name=".GeofenceTransitionsIntentService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".closeReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity android:name=".SettingsPage" />
+
+        <service
+            android:name=".AdminBackground"
+            android:enabled="true"
             android:exported="false">
+            android:stopWithTask="false"
         </service>
     </application>
 

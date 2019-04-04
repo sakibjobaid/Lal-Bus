@@ -86,6 +86,14 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
                     v.getContext().startActivity(intent);
                 }
 
+                else if(schedule.getName().equals(" Srabon"))
+                {
+
+                    Intent intent = new Intent(v.getContext(),MapsActivity.class);
+                    intent.putExtra("name"," Srabon");
+                    v.getContext().startActivity(intent);
+                }
+
                 else
                     Toast.makeText(v.getContext(),"schedule will be added soon",Toast.LENGTH_LONG).show();
 
@@ -101,15 +109,15 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
     }
 
     class ScheduleViewHolder extends RecyclerView.ViewHolder
-     {
+    {
 
-         LinearLayout linearLayout ;
-         TextView tv;
-         public ScheduleViewHolder(@NonNull View itemView) {
-             super(itemView);
+        LinearLayout linearLayout ;
+        TextView tv;
+        public ScheduleViewHolder(@NonNull View itemView) {
+            super(itemView);
 
-             tv=itemView.findViewById(R.id.textViewTitle);
-             linearLayout=itemView.findViewById(R.id.parentLayout);
-         }
-     }
+            tv=itemView.findViewById(R.id.textViewTitle);
+            linearLayout=itemView.findViewById(R.id.parentLayout);
+        }
+    }
 }

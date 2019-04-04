@@ -55,6 +55,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         busName = getIntent().getStringExtra("name");
         this.setTitle(busName+ " Up Trip");
         tv= findViewById(R.id.mywidget);
+        tv.setText("Route may change in any unavoidable situation. "+"              "+" Tap on marker to see stoppage location");
         tv.setSelected(true);
 
         ActionBar actionBar = getSupportActionBar();
@@ -681,6 +682,108 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
         //endregion
+        //region SrabonUp
+        else if(busName.equals(" Srabon"))
+        {
+            Route.add(new LatLng(23.74432220,90.4265937));
+            Route.add(new LatLng(23.74404230,90.4266312));
+            Route.add(new LatLng(23.74222060,90.4267653));
+            Route.add(new LatLng(23.74115010,90.4268297));
+            Route.add(new LatLng(23.74051170,90.4269853));
+            Route.add(new LatLng(23.73999610,90.4273179));
+            Route.add(new LatLng(23.73922030,90.4280528));
+            Route.add(new LatLng(23.73877830,90.4283586));
+            Route.add(new LatLng(23.7383020,90.4284176));
+            Route.add(new LatLng(23.73631810,90.4284927));
+            Route.add(new LatLng(23.73430970,90.4286));
+            Route.add(new LatLng(23.73255650,90.4284551));
+            Route.add(new LatLng(23.73098510,90.428482));
+            Route.add(new LatLng(23.72720370,90.4286375));
+            Route.add(new LatLng(23.72491520,90.4286751));
+            Route.add(new LatLng(23.72236140,90.4287287));
+            Route.add(new LatLng(23.7207260,90.4288575));
+            Route.add(new LatLng(23.71872220,90.4290184));
+            Route.add(new LatLng(23.71720460,90.4292276));
+            Route.add(new LatLng(23.71680670,90.4292169));
+            Route.add(new LatLng(23.71666430,90.4291096));
+            Route.add(new LatLng(23.71662990,90.4288682));
+            Route.add(new LatLng(23.71664470,90.4284927));
+            Route.add(new LatLng(23.71660050,90.4278275));
+            Route.add(new LatLng(23.71656120,90.4273715));
+            Route.add(new LatLng(23.71653660,90.4267707));
+            Route.add(new LatLng(23.71645310,90.4266527));
+            Route.add(new LatLng(23.716350,90.4266366));
+            Route.add(new LatLng(23.715520,90.4266634));
+            Route.add(new LatLng(23.71519580,90.4264649));
+            Route.add(new LatLng(23.71487660,90.4260411));
+            Route.add(new LatLng(23.7147390,90.4254296));
+            Route.add(new LatLng(23.71471940,90.4249575));
+            Route.add(new LatLng(23.71493920,90.4243429));
+            Route.add(new LatLng(23.71546470,90.4233559));
+            Route.add(new LatLng(23.71586250,90.422739));
+            Route.add(new LatLng(23.71602460,90.4220255));
+            Route.add(new LatLng(23.71614740,90.4212906));
+            Route.add(new LatLng(23.7165010,90.4206576));
+            Route.add(new LatLng(23.71695780,90.4202016));
+            Route.add(new LatLng(23.71835260,90.4194023));
+            Route.add(new LatLng(23.71952150,90.4188122));
+            Route.add(new LatLng(23.72008630,90.4184421));
+            Route.add(new LatLng(23.72066580,90.4179593));
+            Route.add(new LatLng(23.72115690,90.4174604));
+            Route.add(new LatLng(23.72161860,90.41694));
+            Route.add(new LatLng(23.72203110,90.4163124));
+            Route.add(new LatLng(23.72244360,90.4155936));
+            Route.add(new LatLng(23.72280220,90.4146923));
+            Route.add(new LatLng(23.72294950,90.4140003));
+            Route.add(new LatLng(23.7229790,90.4131796));
+            Route.add(new LatLng(23.72295440,90.4123749));
+            Route.add(new LatLng(23.72294460,90.4113557));
+            Route.add(new LatLng(23.72309190,90.4082711));
+            Route.add(new LatLng(23.72317050,90.4062917));
+            Route.add(new LatLng(23.72320980,90.4053261));
+            Route.add(new LatLng(23.72331290,90.4040064));
+            Route.add(new LatLng(23.72346030,90.4030784));
+            Route.add(new LatLng(23.72365180,90.4020269));
+            Route.add(new LatLng(23.72387770,90.4003211));
+            Route.add(new LatLng(23.72456520,90.400246));
+            Route.add(new LatLng(23.72486480,90.400262));
+            Route.add(new LatLng(23.72548850,90.4003371));
+            Route.add(new LatLng(23.72600420,90.4003801));
+            Route.add(new LatLng(23.72658370,90.4004444));
+            Route.add(new LatLng(23.72703550,90.4004874));
+            Route.add(new LatLng(23.72748730,90.4004605));
+            Route.add(new LatLng(23.72776230,90.4004123));
+            Route.add(new LatLng(23.72786050,90.4004766));
+            Route.add(new LatLng(23.72797840,90.4005571));
+            Route.add(new LatLng(23.72812080,90.4005195));
+            Route.add(new LatLng(23.72821410,90.4004283));
+            Route.add(new LatLng(23.72821410,90.4002674));
+            Route.add(new LatLng(23.72817970,90.400144));
+            Route.add(new LatLng(23.72804720,90.4000743));
+            Route.add(new LatLng(23.72793420,90.4000528));
+            Route.add(new LatLng(23.7274480,90.3982879));
+            Route.add(new LatLng(23.72727610,90.3975906));
+            Route.add(new LatLng(23.72783110,90.3970809));
+            Route.add(new LatLng(23.72892620,90.3959759));
+            Route.add(new LatLng(23.72930930,90.3954609));
+            Route.add(new LatLng(23.73015390,90.3954126));
+            Route.add(new LatLng(23.73102310,90.3953));
+            Route.add(new LatLng(23.73155840,90.3952356));
+            Route.add(new LatLng(23.7319120,90.3951551));
+            Route.add(new LatLng(23.73219190,90.3950478));
+            Route.add(new LatLng(23.73241780,90.3949191));
+            Route.add(new LatLng(23.73256020,90.394785));
+            Route.add(new LatLng(23.73270260,90.3945704));
+            Route.add(new LatLng(23.73283520,90.3944148));
+            Route.add(new LatLng(23.73290890,90.3942324));
+            Route.add(new LatLng(23.73296290,90.3940447));
+            Route.add(new LatLng(23.73309060,90.3941037));
+            Route.add(new LatLng(23.73302180,90.3943075));
+            Route.add(new LatLng(23.7329040,90.3945597));
+            Route.add(new LatLng(23.7327910,90.3948547));
+        }
+        //endregion
+
 
 
 
@@ -1292,6 +1395,107 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
         //endregion
+        //region SrabonDown
+        else if(busName.equals(" Srabon"))
+        {
+            Route.add(new LatLng(23.7327910,90.3948547));
+            Route.add(new LatLng(23.7329040,90.3945597));
+            Route.add(new LatLng(23.73302180,90.3943075));
+            Route.add(new LatLng(23.73309060,90.3941037));
+            Route.add(new LatLng(23.73296290,90.3940447));
+            Route.add(new LatLng(23.73290890,90.3942324));
+            Route.add(new LatLng(23.73283520,90.3944148));
+            Route.add(new LatLng(23.73270260,90.3945704));
+            Route.add(new LatLng(23.73256020,90.394785));
+            Route.add(new LatLng(23.73241780,90.3949191));
+            Route.add(new LatLng(23.73219190,90.3950478));
+            Route.add(new LatLng(23.7319120,90.3951551));
+            Route.add(new LatLng(23.73155840,90.3952356));
+            Route.add(new LatLng(23.73102310,90.3953));
+            Route.add(new LatLng(23.73015390,90.3954126));
+            Route.add(new LatLng(23.72930930,90.3954609));
+            Route.add(new LatLng(23.72892620,90.3959759));
+            Route.add(new LatLng(23.72783110,90.3970809));
+            Route.add(new LatLng(23.72727610,90.3975906));
+            Route.add(new LatLng(23.7274480,90.3982879));
+            Route.add(new LatLng(23.72793420,90.4000528));
+            Route.add(new LatLng(23.72804720,90.4000743));
+            Route.add(new LatLng(23.72817970,90.400144));
+            Route.add(new LatLng(23.72821410,90.4002674));
+            Route.add(new LatLng(23.72821410,90.4004283));
+            Route.add(new LatLng(23.72812080,90.4005195));
+            Route.add(new LatLng(23.72797840,90.4005571));
+            Route.add(new LatLng(23.72786050,90.4004766));
+            Route.add(new LatLng(23.72776230,90.4004123));
+            Route.add(new LatLng(23.72748730,90.4004605));
+            Route.add(new LatLng(23.72703550,90.4004874));
+            Route.add(new LatLng(23.72658370,90.4004444));
+            Route.add(new LatLng(23.72600420,90.4003801));
+            Route.add(new LatLng(23.72548850,90.4003371));
+            Route.add(new LatLng(23.72486480,90.400262));
+            Route.add(new LatLng(23.72456520,90.400246));
+            Route.add(new LatLng(23.72387770,90.4003211));
+            Route.add(new LatLng(23.72365180,90.4020269));
+            Route.add(new LatLng(23.72346030,90.4030784));
+            Route.add(new LatLng(23.72331290,90.4040064));
+            Route.add(new LatLng(23.72320980,90.4053261));
+            Route.add(new LatLng(23.72317050,90.4062917));
+            Route.add(new LatLng(23.72309190,90.4082711));
+            Route.add(new LatLng(23.72294460,90.4113557));
+            Route.add(new LatLng(23.72295440,90.4123749));
+            Route.add(new LatLng(23.7229790,90.4131796));
+            Route.add(new LatLng(23.72294950,90.4140003));
+            Route.add(new LatLng(23.72280220,90.4146923));
+            Route.add(new LatLng(23.72244360,90.4155936));
+            Route.add(new LatLng(23.72203110,90.4163124));
+            Route.add(new LatLng(23.72161860,90.41694));
+            Route.add(new LatLng(23.72115690,90.4174604));
+            Route.add(new LatLng(23.72066580,90.4179593));
+            Route.add(new LatLng(23.72008630,90.4184421));
+            Route.add(new LatLng(23.71952150,90.4188122));
+            Route.add(new LatLng(23.71835260,90.4194023));
+            Route.add(new LatLng(23.71695780,90.4202016));
+            Route.add(new LatLng(23.7165010,90.4206576));
+            Route.add(new LatLng(23.71614740,90.4212906));
+            Route.add(new LatLng(23.71602460,90.4220255));
+            Route.add(new LatLng(23.71586250,90.422739));
+            Route.add(new LatLng(23.71546470,90.4233559));
+            Route.add(new LatLng(23.71493920,90.4243429));
+            Route.add(new LatLng(23.71471940,90.4249575));
+            Route.add(new LatLng(23.7147390,90.4254296));
+            Route.add(new LatLng(23.71487660,90.4260411));
+            Route.add(new LatLng(23.71519580,90.4264649));
+            Route.add(new LatLng(23.715520,90.4266634));
+            Route.add(new LatLng(23.716350,90.4266366));
+            Route.add(new LatLng(23.71645310,90.4266527));
+            Route.add(new LatLng(23.71653660,90.4267707));
+            Route.add(new LatLng(23.71656120,90.4273715));
+            Route.add(new LatLng(23.71660050,90.4278275));
+            Route.add(new LatLng(23.71664470,90.4284927));
+            Route.add(new LatLng(23.71662990,90.4288682));
+            Route.add(new LatLng(23.71666430,90.4291096));
+            Route.add(new LatLng(23.71680670,90.4292169));
+            Route.add(new LatLng(23.71720460,90.4292276));
+            Route.add(new LatLng(23.71872220,90.4290184));
+            Route.add(new LatLng(23.7207260,90.4288575));
+            Route.add(new LatLng(23.72236140,90.4287287));
+            Route.add(new LatLng(23.72491520,90.4286751));
+            Route.add(new LatLng(23.72720370,90.4286375));
+            Route.add(new LatLng(23.73098510,90.428482));
+            Route.add(new LatLng(23.73255650,90.4284551));
+            Route.add(new LatLng(23.73430970,90.4286));
+            Route.add(new LatLng(23.73631810,90.4284927));
+            Route.add(new LatLng(23.7383020,90.4284176));
+            Route.add(new LatLng(23.73877830,90.4283586));
+            Route.add(new LatLng(23.73922030,90.4280528));
+            Route.add(new LatLng(23.73999610,90.4273179));
+            Route.add(new LatLng(23.74051170,90.4269853));
+            Route.add(new LatLng(23.74115010,90.4268297));
+            Route.add(new LatLng(23.74222060,90.4267653));
+            Route.add(new LatLng(23.74404230,90.4266312));
+            Route.add(new LatLng(23.74432220,90.4265937));
+        }
+        //endregion
 
 
 
@@ -1329,7 +1533,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 200);
 
                 mMap.moveCamera(cu);
-                //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(23.738287, 90.372810), 15f));
 
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(15f), 2000, null);
 

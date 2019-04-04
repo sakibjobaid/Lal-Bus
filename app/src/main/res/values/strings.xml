@@ -5,6 +5,9 @@
     <string name="time">TIME</string>
     <string name="busGeofence">Bus Reminder</string>
     <string name="locationAlarm">Location Alarm</string>
+    <string name="feedback">Feedback</string>
+    <string name="admin_settings">Admin Settings</string>
+    <string name="turn_off">Turn off</string>
     <string name="settings">Bus Schedule</string>
     <string name="network_unavailable">Network Connection Unavailable</string>
     <string name="GPS_unavailable">GPS Connection Unavailable</string>
@@ -24,7 +27,7 @@
     <string name="nav_open_drawer">open drawer</string>
     <string name="nav_close_drawer">close drawer</string>
     <string name="admin_mode">You are in admin mode.</string>
-    <string name="marker_tap">Tap on the marker to see stoppage location.</string>
+    <string name="marker_tap">Route may change in any unavoidable situation.  Tap on marker to see stoppage location.</string>
 
     <string name="reminder_removal_alert">Remove reminder?</string>
     <string name="reminder_removal_alert_positive">OK</string>

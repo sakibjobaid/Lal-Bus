@@ -26,14 +26,13 @@ public class RecylerViewActivity extends AppCompatActivity {
         {
             case "Bus Schedule":  this.setTitle("Bus Schedule"); break;
             case "Route And Stoppage":  this.setTitle("Route And Stoppage"); break;
-
         }
 
         if(title.equals("Bus Schedule"))
         {
             scheduleList = new ArrayList<>();
             recyclerView=(RecyclerView)findViewById(R.id.recyclerView);
-            recyclerView.setHasFixedSize(true);
+            //recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             scheduleList.add(new Schedule("Anando"));
             scheduleList.add(new Schedule("Boishakhi"));
@@ -58,7 +57,7 @@ public class RecylerViewActivity extends AppCompatActivity {
         {
             scheduleList = new ArrayList<>();
             recyclerView=(RecyclerView)findViewById(R.id.recyclerView);
-            recyclerView.setHasFixedSize(true);
+            //recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             scheduleList.add(new Schedule(" Anando"));
             scheduleList.add(new Schedule(" Boishakhi"));
@@ -78,7 +77,6 @@ public class RecylerViewActivity extends AppCompatActivity {
             scheduleAdapter = new ScheduleAdapter(this,scheduleList);
             recyclerView.setAdapter(scheduleAdapter);
         }
-
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
