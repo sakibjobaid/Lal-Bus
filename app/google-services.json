@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "307650464776",
+    "firebase_url": "https://alarm-kingdom.firebaseio.com",
+    "project_id": "alarm-kingdom",
+    "storage_bucket": "alarm-kingdom.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307650464776:android:a0e932a4ef651a52",
+        "android_client_info": {
+          "package_name": "com.example.asus.remindmemyself"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "307650464776-asi3gnmmv70fpd4167ppei3dkn51b9s7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.asus.remindmemyself",
+            "certificate_hash": "99b05638cc2f17515c385322deb21f06645c37e0"
+          }
+        },
+        {
+          "client_id": "307650464776-045f3k4161okpoaqdc2md61i0vpgduqo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJlYDdYz7LilyD0XS3b-F6tMf4gOiqkpE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "307650464776-045f3k4161okpoaqdc2md61i0vpgduqo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

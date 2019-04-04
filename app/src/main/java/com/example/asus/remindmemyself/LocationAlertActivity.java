@@ -1,8 +1,12 @@
 package com.example.asus.remindmemyself;
 
+import android.app.Activity;
 import android.app.KeyguardManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -25,6 +29,8 @@ public class LocationAlertActivity extends AppCompatActivity implements View.OnC
     public static Vibrator myVib;
     public static Uri uri;
     public static AudioManager am;
+    public static MediaPlayer player;
+    public Activity activity;
     final long[] pattern = {0, 1000, 1000, 1000, 1000};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +57,15 @@ public class LocationAlertActivity extends AppCompatActivity implements View.OnC
         button=(Button)findViewById(R.id.StopAlarm);
         button.setOnClickListener(this);
 
-        uri = RingtoneManager.getActualDefaultRingtoneUri(LocationAlertActivity.this, RingtoneManager.TYPE_ALARM);
-        defaultRingtone = RingtoneManager.getRingtone(LocationAlertActivity.this, uri);
+        //uri = RingtoneManager.getActualDefaultRingtoneUri(LocationAlertActivity.this, RingtoneManager.TYPE_ALARM);
+        //defaultRingtone = RingtoneManager.getRingtone(LocationAlertActivity.this, uri);
         myVib = (Vibrator)this.getSystemService(VIBRATOR_SERVICE);
         am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        player = MediaPlayer.create(this, notification);
+
+
         startAlarm();
 
 
@@ -67,27 +78,42 @@ public class LocationAlertActivity extends AppCompatActivity implements View.OnC
     public void onClick(View v) {
 
         Log.d("bangladesh","la");
-        defaultRingtone.stop();
+        //defaultRingtone.stop();
+        player.stop();
         myVib.cancel();
+        GlobalClass.ct=1;
+        TrackerService.client.removeLocationUpdates(TrackerService.locationCallback);
+        ComponentName receiver = new ComponentName(this, closeReceiver.class);
+        PackageManager pm = this.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+
         finish();
 
     }
 
     private void startAlarm() {
 
+
         if(am.getRingerMode()==AudioManager.RINGER_MODE_NORMAL)
         {
             Handler handler=new Handler();
             Runnable r=new Runnable() {
                 public void run() {
-                    defaultRingtone.stop();
+                    //defaultRingtone.stop();
+                    player.stop();
                     myVib.cancel();
                     finish();
                 }
             };
             handler.postDelayed(r, 180000);
-            defaultRingtone.play();
-            defaultRingtone.setLooping(true);
+            player.start();
+            player.setLooping(true);
+
+            //defaultRingtone.play();
+            //defaultRingtone.setLooping(true);
             myVib.vibrate(pattern,0);
 
         }

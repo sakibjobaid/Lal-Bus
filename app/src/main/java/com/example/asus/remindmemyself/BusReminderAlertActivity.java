@@ -3,6 +3,7 @@ package com.example.asus.remindmemyself;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -25,6 +26,8 @@ public class BusReminderAlertActivity extends AppCompatActivity implements View.
     public static Ringtone defaultRingtone;
     public static Vibrator myVib;
     public static Uri uri;
+    public static MediaPlayer player;
+
     public static AudioManager am;
     final long[] pattern = {0, 1000, 1000, 1000, 1000};
     @Override
@@ -36,7 +39,7 @@ public class BusReminderAlertActivity extends AppCompatActivity implements View.
             Log.d("hellohello","greater than 27");
             setShowWhenLocked(true);
             setTurnScreenOn(true);
-           KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+            KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
             keyguardManager.requestDismissKeyguard(this, null);
         } else {
             Log.d("hellohello", ";lesser");
@@ -52,8 +55,10 @@ public class BusReminderAlertActivity extends AppCompatActivity implements View.
         button=(Button)findViewById(R.id.StopAlarm);
         button.setOnClickListener(this);
 
-        uri = RingtoneManager.getActualDefaultRingtoneUri(BusReminderAlertActivity.this, RingtoneManager.TYPE_ALARM);
-        defaultRingtone = RingtoneManager.getRingtone(BusReminderAlertActivity.this, uri);
+//        uri = RingtoneManager.getActualDefaultRingtoneUri(BusReminderAlertActivity.this, RingtoneManager.TYPE_ALARM);
+//        defaultRingtone = RingtoneManager.getRingtone(BusReminderAlertActivity.this, uri);
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        player = MediaPlayer.create(this, notification);
         myVib = (Vibrator)this.getSystemService(VIBRATOR_SERVICE);
         am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         startAlarm();
@@ -66,7 +71,8 @@ public class BusReminderAlertActivity extends AppCompatActivity implements View.
     public void onClick(View v) {
 
         Log.d("bangladesh","las");
-        defaultRingtone.stop();
+        //defaultRingtone.stop();
+        player.stop();
         myVib.cancel();
         finish();
 
@@ -79,17 +85,20 @@ public class BusReminderAlertActivity extends AppCompatActivity implements View.
 
             Log.d("alarm_sakib","outside");
 
-                    Handler handler=new Handler();
-        Runnable r=new Runnable() {
-            public void run() {
-                defaultRingtone.stop();
-                myVib.cancel();
-                finish();
-            }
-        };
-        handler.postDelayed(r, 180000);
-            defaultRingtone.play();
-            defaultRingtone.setLooping(true);
+            Handler handler=new Handler();
+            Runnable r=new Runnable() {
+                public void run() {
+                    //defaultRingtone.stop();
+                    player.stop();
+                    myVib.cancel();
+                    finish();
+                }
+            };
+            handler.postDelayed(r, 180000);
+//            defaultRingtone.play();
+//            defaultRingtone.setLooping(true);
+            player.start();
+            player.setLooping(true);
             myVib.vibrate(pattern,0);
 
         }
