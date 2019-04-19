@@ -24,6 +24,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
@@ -31,10 +32,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+
+import java.util.Arrays;
 
 public class GeofenceSettings1 extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener,
 
@@ -49,7 +56,6 @@ public class GeofenceSettings1 extends AppCompatActivity implements OnMapReadyCa
     private Button continue1;
     public static LatLng geofenceCentre;
     private ImageView marker;
-    private Circle geoFenceLimits;
     private GeofencingClient mGeofencingClient;
     private GeofencingRequest geofenceRequest;
     private Geofence geofence;
@@ -75,6 +81,34 @@ public class GeofenceSettings1 extends AppCompatActivity implements OnMapReadyCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_geofence_settings1);
+
+
+        // Initialize Places.
+        Places.initialize(getApplicationContext(), "AIzaSyD3IWchlOeAc8_j0DTIXQ7xy5Wswk3mqwg");
+        // Create a new Places client instance.
+        //PlacesClient placesClient = Places.createClient(this);
+
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.d("skjobaid", "Place: " + place.getName() + ", " + place.getId());
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.d("skjobaid", "An error occurred: " + status);
+            }
+        });
 
 
 
@@ -158,19 +192,135 @@ public class GeofenceSettings1 extends AppCompatActivity implements OnMapReadyCa
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        mMap = googleMap;
         Log.d("jobaid", "Settings:onMapReady");
-        // Add a marker in Sydney and move the camera
-        LatLng jigatala = new LatLng(GlobalClass.currentlat, GlobalClass.currentlon);
-        //mMap.addMarker(new MarkerOptions().position(jigatala));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(jigatala, 15f));
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                return true;
+            }
+        });
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setRotateGesturesEnabled(false);
+        mMap.getUiSettings().setTiltGesturesEnabled(false);
+
+
+        if(GlobalClass.locAlarm==0 && GlobalClass.busAlarm==0)
+        {
+            LatLng jigatala = new LatLng(GlobalClass.currentlat, GlobalClass.currentlon);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(jigatala, 15f));
+            Log.d("cheeks","one");
+            return;
+        }
+
+        if(GlobalClass.busAlarm==1 && purpose.equals("busReminder"))
+        {
+            Log.d("parai","abcde");
+            if(GlobalClass.busLoc!=null)
+            {
+                GlobalClass.marker1 = mMap.addMarker(new MarkerOptions()
+                        .position(GlobalClass.busLoc));
+                Log.d("skjo",String.valueOf(GlobalClass.busLoc));
+                CircleOptions circleOptions = new CircleOptions()
+                        .center(GlobalClass.busLoc)
+                        .strokeColor(Color.BLUE)
+                        .fillColor(Color.argb(100, 150, 150, 150))
+                        .radius(GlobalClass.busradius);
+                GlobalClass.geoFenceLimits = mMap.addCircle(circleOptions);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(GlobalClass.busLoc, 15f));
+                Log.d("cheeks","two");
+            }
+
+
+        }
+       else if(GlobalClass.locAlarm==1 && purpose.equals("locationAlarm"))
+        {
+            if(GlobalClass.centreLoc!=null)
+            {
+                Log.d("parai","abcde");
+                GlobalClass.marker1 = mMap.addMarker(new MarkerOptions()
+                        .position(GlobalClass.centreLoc));
+                Log.d("skjo",String.valueOf(GlobalClass.busLoc));
+                CircleOptions circleOptions = new CircleOptions()
+                        .center(GlobalClass.centreLoc)
+                        .strokeColor(Color.BLUE)
+                        .fillColor(Color.argb(100, 150, 150, 150))
+                        .radius(GlobalClass.locradius);
+                GlobalClass.geoFenceLimits = mMap.addCircle(circleOptions);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(GlobalClass.centreLoc, 15f));
+                Log.d("cheeks","two");
+            }
+
+        }
+        if(GlobalClass.busAlarm==0 && purpose.equals("busReminder") && GlobalClass.locAlarm==1)
+        {
+            Log.d("cheeks","four");
+            AlertDialog.Builder builder = new AlertDialog.Builder(GeofenceSettings1.this);
+            builder.setTitle("Confirmation");
+            builder.setMessage("Your location alarm will be cancelled . Do you want to continue with bus reminder ?");
+
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    TrackerService.trackerService.stopSelf();
+                    GlobalClass.centreLoc=null;
+                    GlobalClass.locAlarm=0;
+                    GlobalClass.locradius=0;
+                    GlobalClass.geoFenceLimits.remove();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            builder.setCancelable(false);
+            builder.show();
+
+            LatLng jigatala = new LatLng(GlobalClass.currentlat, GlobalClass.currentlon);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(jigatala, 15f));
+        }
+        else if(GlobalClass.locAlarm==0 && purpose.equals("locationAlarm") && GlobalClass.busAlarm==1)
+        {
+            Log.d("cheeks","five");
+
+            Log.d("cheeks","four");
+            AlertDialog.Builder builder = new AlertDialog.Builder(GeofenceSettings1.this);
+            builder.setTitle("Confirmation");
+            builder.setMessage("Your bus reminder will be cancelled . Do you want to continue with location alarm ?");
+
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    BusTrackerService.busTrackerService.stopSelf();
+                    GlobalClass.busLoc=null;
+                    GlobalClass.busradius=0;
+                    GlobalClass.busAlarm=0;
+                    GlobalClass.geoFenceLimits.remove();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            builder.setCancelable(false);
+            builder.show();
+            LatLng jigatala = new LatLng(GlobalClass.currentlat, GlobalClass.currentlon);
+            //mMap.addMarker(new MarkerOptions().position(jigatala));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(jigatala, 15f));
+
+        }
+
+
 
 
     }
@@ -218,19 +368,20 @@ public class GeofenceSettings1 extends AppCompatActivity implements OnMapReadyCa
     private void showReminderUpdate() {
 
         Log.d("jobaid", "Settings:showReminderInMap");
+        if(GlobalClass.geoFenceLimits!=null)
+            GlobalClass.geoFenceLimits.remove();
 
 //            val vectorToBitmapt = vectorToBitmap(context.resources, R.drawable.ic_twotone_location_on_48px)
 //            val marker = map.addMarker(MarkerOptions().position(latLng).icon(vectorToBitmap))
 //            marker.tag = reminder.id
-        if (geoFenceLimits != null)
-            geoFenceLimits.remove();
         mMap.addMarker(new MarkerOptions().position(geofenceCentre));
+
         CircleOptions circleOptions = new CircleOptions()
                 .center(geofenceCentre)
                 .strokeColor(Color.BLUE)
                 .fillColor(Color.argb(100, 150, 150, 150))
                 .radius(fenceRadius);
-        geoFenceLimits = mMap.addCircle(circleOptions);
+        GlobalClass.geoFenceLimits = mMap.addCircle(circleOptions);
 //            if (reminder.radius != null) {
 //                val radius = reminder.radius as Double
 //                map.addCircle(CircleOptions()
@@ -239,7 +390,6 @@ public class GeofenceSettings1 extends AppCompatActivity implements OnMapReadyCa
 //                        .strokeColor(ContextCompat.getColor(context, R.color.colorAccent))
 //                        .fillColor(ContextCompat.getColor(context, R.color.colorReminderFill)))
 //            }
-
     }
 
     private void updateRadiusWithProgress(int progress) {
@@ -265,6 +415,10 @@ public class GeofenceSettings1 extends AppCompatActivity implements OnMapReadyCa
         else if (progress >= 80 && progress < 90) progress *= 40;
         else if (progress >= 90 && progress <= 100) progress *= 50;
         fenceRadius = progress;
+        if(purpose.equals("busReminder"))
+        GlobalClass.busradius=progress;
+        else if(purpose.equals("locationAlarm"))
+            GlobalClass.locradius=progress;
         return progress;
     }
 
@@ -300,6 +454,7 @@ public class GeofenceSettings1 extends AppCompatActivity implements OnMapReadyCa
         //endregion
         if(purpose.equals("busReminder"))
         {
+            GlobalClass.busAlarm=1;
             Intent intent= new Intent(this,BusTrackerService.class);
             intent.putExtra("Latitude",geofenceCentre.latitude);
             intent.putExtra("Longitude",geofenceCentre.longitude);
@@ -308,6 +463,7 @@ public class GeofenceSettings1 extends AppCompatActivity implements OnMapReadyCa
         }
         else if(purpose.equals("locationAlarm"))
         {
+            GlobalClass.locAlarm=1;
             Intent intent= new Intent(this,TrackerService.class);
             intent.putExtra("Latitude",geofenceCentre.latitude);
             intent.putExtra("Longitude",geofenceCentre.longitude);
@@ -336,6 +492,7 @@ public class GeofenceSettings1 extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
+                GlobalClass.progress=0;
                 //check = true;
                 Toast.makeText(GeofenceSettings1.this,"abal",Toast.LENGTH_LONG).show();
                 GeofenceTransitionsIntentService.defaultRingtone.stop();
@@ -421,12 +578,79 @@ public class GeofenceSettings1 extends AppCompatActivity implements OnMapReadyCa
         }
         if (v == continue1 && first) {
 
+            if(GlobalClass.busAlarm==1 && purpose.equals("busReminder"))
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(GeofenceSettings1.this);
+                builder.setTitle("Confirmation");
+                builder.setMessage("Do you want to overwrite your previous bus reminder ?");
+
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        BusTrackerService.busTrackerService.stopSelf();
+                       GlobalClass.geoFenceLimits.remove();
+                       GlobalClass.marker1.remove();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+                builder.setCancelable(false);
+                builder.show();
+            }
+
+
+               else if(GlobalClass.locAlarm==1 && purpose.equals("locationAlarm"))
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(GeofenceSettings1.this);
+                    builder.setTitle("Confirmation");
+                    builder.setMessage("Do you want to overwrite your previous location alarm ?");
+
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            TrackerService.trackerService.stopSelf();
+                            GlobalClass.geoFenceLimits.remove();
+                            GlobalClass.marker1.remove();
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    });
+                    builder.setCancelable(false);
+                    builder.show();
+                }
+
             Log.d("jobaid", "Settings:onclick:click one");
             second = true;
             first = false;
             mMap.getUiSettings().setScrollGesturesEnabled(false);
             fab2.setVisibility(View.GONE);
             geofenceCentre = mMap.getCameraPosition().target;
+
+            if(purpose.equals("busReminder"))
+            {
+                Log.d("buyer","buyer1");
+
+                GlobalClass.busLoc=new LatLng(geofenceCentre.latitude,geofenceCentre.longitude);
+
+            }
+
+
+            else if(purpose.equals("locationAlarm"))
+            {
+                Log.d("buyer","buyer2");
+
+                GlobalClass.centreLoc=new LatLng(geofenceCentre.latitude,geofenceCentre.longitude);
+
+            }
+
             firstActivity.centerLocation.setLatitude(geofenceCentre.latitude);
             firstActivity.centerLocation.setLongitude(geofenceCentre.longitude);
             showConfigureRadiusStep();

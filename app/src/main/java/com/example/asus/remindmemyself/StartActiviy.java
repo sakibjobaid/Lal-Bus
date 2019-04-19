@@ -1,7 +1,9 @@
 package com.example.asus.remindmemyself;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
@@ -11,17 +13,26 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class StartActiviy extends AppCompatActivity implements View.OnClickListener {
 
-    private Button mAdmin,mUser;
+    private ImageView mAdmin,mUser;
     private LocationManager lm;
+    public static Activity st;
+    private SharedPreferences mPreferences,schedulePref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        st=this;
+        mPreferences = getSharedPreferences("hellosakib", MODE_PRIVATE);
+        schedulePref = getSharedPreferences("hellojobaid", MODE_PRIVATE);
+
+        //Toast.makeText(this,schedulePref.getString("Taranga",""),Toast.LENGTH_LONG).show();
         Log.d("jobaid","StartActivity:onCreate");
+        //Log.d("prefer",  mPreferences.getString("Boishakhi",""));
+        Log.d("prefer",  schedulePref.getString("Taranga",""));
 
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -34,8 +45,8 @@ public class StartActiviy extends AppCompatActivity implements View.OnClickListe
 //        }
 
         setContentView(R.layout.activity_start_activiy);
-        mAdmin=(Button)findViewById(R.id.admin);
-        mUser=(Button)findViewById(R.id.user);
+        mAdmin=(ImageView) findViewById(R.id.admin);
+        mUser=(ImageView) findViewById(R.id.user);
 
         mAdmin.setOnClickListener(this);
         mUser.setOnClickListener(this);
@@ -43,7 +54,7 @@ public class StartActiviy extends AppCompatActivity implements View.OnClickListe
 
     public static boolean isNetworkConnected(Context context) {
 
-        Log.d("jobaid","StartActivity: is NetworkConnected [outside isNetworkConnected]");
+        Log.d("jobaid","firstActivity: is NetworkConnected [outside isNetworkConnected]");
         boolean result = false;
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -128,25 +139,34 @@ public class StartActiviy extends AppCompatActivity implements View.OnClickListe
 
         if(v==mAdmin)
         {
-            //intent= new Intent(this,firstActivity.class);
-            //intent.putExtra("name","admin");
+            if(!isNetworkConnected(this))
+            {
+                Toast.makeText(StartActiviy.this,"Network Connection Required",Toast.LENGTH_LONG).show();
+                return ;
+            }
+            else
+            {
+                intent= new Intent(this,AdminOptions.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                //intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
             Log.d("jobaid","StartActivity:adminClicked");
 
-            Toast.makeText(this,"button clicked",Toast.LENGTH_LONG).show();
-            intent= new Intent(this,AdminLoginPage.class);
-            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            //intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
+
     }
         if(v==mUser)
         {
             // intent= new Intent(this,firstActivity.class);
             //intent.putExtra("name","user");
             Log.d("jobaid","StartActivity:userClicked");
-            intent= new Intent(this,UserLoginPage.class);
+            intent= new Intent(this,firstActivity.class);
+            intent.putExtra("name","user");
+                    intent.putExtra("BUSNAME","BUS");
+                    intent.putExtra("TIME","TIME");
             //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             //intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 

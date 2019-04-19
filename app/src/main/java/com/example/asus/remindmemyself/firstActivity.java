@@ -10,6 +10,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -17,7 +18,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
@@ -80,6 +80,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class firstActivity extends AppCompatActivity implements View.OnClickListener,
@@ -115,9 +116,9 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     public static boolean flag = true,admin=false,user=false,finalLocation=false,alarmflag=true,Bool_busbtn=false,Bool_timbtn=false;
     public static Marker marker;
     private HashMap<String, Marker> mMarkers = new HashMap<>();
-    private static  int count = 0, call = 0,indexNumber=0;
+    private static  int count = 0, call = 0,indexNumber=0,k1=0,l1=0;
     private ImageView img;
-    private TextView tv;
+    private TextView tv,textView;
     public static float dis;
     private Uri uri;
     private LocationManager lm;
@@ -129,11 +130,17 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
     private LinearLayout linearLayout;
     public static String adminselectionBus,adminselectionTime,userselectionBus,userselectionTime;
     private FirebaseAuth mAuth;
-    public static DatabaseReference ref;
+    public Context context;
+    public static DatabaseReference ref,scheduleReference;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     DogsDropdownOnItemClickListener d= new DogsDropdownOnItemClickListener();
     BusAndTime b;
     String[] time;
+    public SharedPreferences schedulePref;
+    public String schedulefile="hellojobaid",temp2;
+    public ValueEventListener val_schedule=null;
+    public static intt2[]up2 = null;
+    public static intt2[]down2 = null;
 
     //endregion
 
@@ -150,6 +157,58 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         tv= findViewById(R.id.mywidget);
         tv.setText("Your are in admin mode. "+"              "+" You are in admin mode.");
         tv.setSelected(true);
+
+        schedulePref = getSharedPreferences(schedulefile, MODE_PRIVATE);
+
+        //region Bus_schedule
+        scheduleReference=FirebaseDatabase.getInstance().getReference()
+                .child("Bus_Schedule");
+        val_schedule= new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    up2= new intt2[50];
+                    down2= new intt2[50];
+                    k1=0; l1=0;
+
+                    for(DataSnapshot inner : snapshot.getChildren()) {
+
+                        if (inner.getKey().matches("(.*)up"))
+                        {
+                            up2[k1]= new intt2();
+                            up2[k1].time= (String) inner.child("time").getValue();
+                            up2[k1].from= (String) inner.child("from").getValue();
+                            up2[k1].to= (String) inner.child("to").getValue();
+                            up2[k1].type= (String) inner.child("type").getValue();
+
+                            Log.d("khushite",up2[k1].time+" "
+                                    +up2[k1].from+" "+up2[k1].to+" "+up2[k1].type+" ");
+                            k1++;
+                        }
+                        else if(inner.getKey().matches("(.*)down"))
+                        {
+                            down2[l1]= new intt2();
+                            down2[l1].time= (String) inner.child("time").getValue();
+                            down2[l1].from= (String) inner.child("from").getValue();
+                            down2[l1].to= (String) inner.child("to").getValue();
+                            down2[l1].type= (String) inner.child("type").getValue();
+                            l1++;
+                        }
+
+                    }
+                    Log.d("sakibjob",String.valueOf(snapshot.getKey()));
+
+                    sorting2(snapshot.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        scheduleReference.addValueEventListener(val_schedule);
+        //endregion
         View.OnClickListener handler = new View.OnClickListener() {
             public void onClick(View v) {
                 switch (v.getId()) {
@@ -173,12 +232,23 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                         break;
 
                     case R.id.searchBtn:
-
+                         GlobalClass.title=true;
+                        if(!isNetworkConnected(firstActivity.this) && buttonTime.getText().equals("TIME"))
+                        {
+                            Toast.makeText(firstActivity.this,"Network Connection Required",Toast.LENGTH_LONG).show();
+                            return ;
+                        }
+                        if(buttonTime.getText().equals("TIME"))
+                        {
+                            Toast.makeText(firstActivity.this,"Select the bus time",Toast.LENGTH_LONG).show();
+                            return ;
+                        }
                         if(!isNetworkConnected(firstActivity.this))
                         {
                             Toast.makeText(firstActivity.this,"Network Connection Required",Toast.LENGTH_LONG).show();
                             return ;
                         }
+
                          GlobalClass.first=1;
                         if(!GlobalClass.BusName.equals(GlobalClass.PreBusName))
                         {
@@ -189,7 +259,6 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                         if(!GlobalClass.BusTime.equals(GlobalClass.preBusTime))
                         {
                             Toast.makeText(firstActivity.this,"Same schedule",Toast.LENGTH_LONG).show();
-
                             GlobalClass.preBusTime=GlobalClass.BusTime;
                             Bool_timbtn=true;
                         }
@@ -294,10 +363,13 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
         //endregion
 
+        if (ContextCompat.checkSelfPermission(firstActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(firstActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+        }
         if((getIntent().getStringExtra("name")).equals("admin"))
         {
             Log.d("locker","admin");
-            fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_location));
+            fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_bus));
             adminselectionBus=getIntent().getStringExtra("BUSNAME");
             adminselectionTime=getIntent().getStringExtra("TIME");
             this.setTitle(adminselectionBus+" "+adminselectionTime);
@@ -323,13 +395,29 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                 Log.d("pppp","two");
                 fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_location));
             }
+            textView=(TextView)findViewById(R.id.profile_email);
+
+            if(textView!=null)
+            textView.setText(GlobalClass.useremail);
 
             userselectionBus = getIntent().getStringExtra("BUSNAME");
             userselectionTime=getIntent().getStringExtra("TIME");
-            this.setTitle(userselectionBus+" "+userselectionTime);
 
-            buttonBus.setText(userselectionBus);
-            buttonTime.setText(userselectionTime);
+
+            if(GlobalClass.title)
+            {
+                buttonBus.setText(userselectionBus);
+                buttonTime.setText(userselectionTime);
+                this.setTitle(userselectionBus+" "+userselectionTime);
+            }
+
+            else
+            {
+                this.setTitle("Lal Bus");
+                buttonBus.setText("BUS");
+                buttonTime.setText("TIME");
+            }
+
             user=true;
             Log.d("jobaid","firstActivity: "+userselectionBus + " " + userselectionTime);
         }
@@ -339,7 +427,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         if(admin)
         {
             menu.findItem(R.id.nav_busReminder).setVisible(false);
-
+            menu.findItem(R.id.nav_settings).setVisible(false);
             linearLayout.setVisibility(View.GONE);
             adminloginToFirebase();
         }
@@ -357,6 +445,9 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                         marker.remove();
                     Log.d("jobaid","firstactivity : onDataChange");
 
+                    if(userselectionBus.equals("BUS")||userselectionTime.equals("TIME"))
+                       return ;
+                    else
                     setMarker(dataSnapshot);
                 }
 
@@ -400,19 +491,19 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                     if(finalLocation)
                     {
 
-//                        GlobalClass.signal=true;
-//                        Intent intent= new Intent(firstActivity.this,AdminBackground.class);
-//                        intent.putExtra("BusName",adminselectionBus);
-//                        intent.putExtra("BusTime",adminselectionTime);
-//                        startService(intent);
+                        GlobalClass.signal=true;
+                        Intent intent= new Intent(firstActivity.this,AdminBackground.class);
+                        intent.putExtra("BusName",adminselectionBus);
+                        intent.putExtra("BusTime",adminselectionTime);
+                        startService(intent);
                         /// location by camera movement
-                        AdminLocation al= new AdminLocation(aftercameramove.latitude,aftercameramove.longitude);
-                        Toast.makeText(firstActivity.this,"GPS signal is transmitting",Toast.LENGTH_SHORT).show();
-                        Log.d("jobaid", "firstactivity : GPS signal is transmitting");
-                        ref.child("Admin").child("Location")
-                                .child(adminselectionBus)
-                                .child(adminselectionTime)
-                                .setValue(al);
+//                        AdminLocation al= new AdminLocation(aftercameramove.latitude,aftercameramove.longitude);
+//                        Toast.makeText(firstActivity.this,"GPS signal is transmitting",Toast.LENGTH_SHORT).show();
+//                        Log.d("jobaid", "firstactivity : GPS signal is transmitting");
+//                        ref.child("Admin").child("Location")
+//                                .child(adminselectionBus)
+//                                .child(adminselectionTime)
+//                                .setValue(al);
                     }
                     else
                     {
@@ -431,7 +522,34 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         createLocationRequest();
 
     }
+    private void sorting2(String name) {
+        temp2="";
 
+        Log.d("haider","cholse");
+        Arrays.sort(up2,0,k1,new Cmp2());
+        Log.d("haider","cholse2");
+        for(int i=0; i<k1; ++i) {
+            temp2+=(up2[i].time+"#");
+            temp2+=(up2[i].from+"#");
+            temp2+=(up2[i].to+"#");
+            temp2+=(up2[i].type+"$");
+        }
+        Log.d("haider","cholse3");
+        Arrays.sort(down2,0,l1,new Cmp2());
+        Log.d("haider","cholse4");
+        for(int i=0; i<l1; ++i) {
+            temp2+=(down2[i].time+"#");
+            temp2+=(down2[i].from+"#");
+            temp2+=(down2[i].to+"#");
+            temp2+=(down2[i].type+"$");
+        }
+
+        Log.d("william",temp2+"@@");
+        SharedPreferences.Editor preferencesEditor = schedulePref.edit();
+        preferencesEditor.putString(name, temp2);
+        preferencesEditor.apply();
+
+    }
     private void createLocationRequest() {
         Log.d("jobaid", "firstactivity: createLocationRequest");
 
@@ -455,11 +573,6 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         super.onResume();
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        if(mMap== null)
-        {
-            Log.d("humpty","dumpty");
-        }
-
         Log.d("jobaid", "firstactivity : onResume");
         // works for walton
         // startLocationUpdates();
@@ -468,8 +581,9 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
             if(mMap!=null && GlobalClass.waiting==1)
             {
+                Log.d("deb","1");
                 GlobalClass.waiting=0;
-                fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_bus));
+                fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_location));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(GlobalClass.currentlat,GlobalClass.currentlon),15f));
 
                 return;
@@ -489,11 +603,13 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void run() {
 
+                        if(GlobalClass.progress==1)
+                          progressDialog.dismiss();
                         Toast.makeText(firstActivity.this,"biday pitibi",Toast.LENGTH_SHORT).show();
                         if(GlobalClass.pp==1)
                         {
                             progressDialog.dismiss();
-                            Log.d("pppp","three");
+                            Log.d("deb","2");
                             fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_location));
                             ++locBus;
                             Log.d("jobaid","hosseeee");
@@ -501,10 +617,12 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
                         }
                         else
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(GlobalClass.currentlat,GlobalClass.currentlon),15f));
+                        {
+                            Log.d("deb","3");
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(GlobalClass.currentlat,GlobalClass.currentlon),15f));}
 
                     }
-                }, 1000);
+                }, 2000);
             }
 
             if (ContextCompat.checkSelfPermission(firstActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -535,6 +653,8 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                                         handler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
+
+                                                Log.d("deb","4");
 
                                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(GlobalClass.currentlat,GlobalClass.currentlon),zoom));
 
@@ -600,8 +720,12 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         mMap.setOnCameraMoveCanceledListener(this);
         mMap.setPadding(0,150,0,0);
         mMap.getUiSettings().setRotateGesturesEnabled(false);
+        mMap.getUiSettings().setTiltGesturesEnabled(false);
+
         LatLng jigatala = new LatLng(GlobalClass.currentlat, GlobalClass.currentlon);
         //mMap.addMarker(new MarkerOptions().position(jigatala));
+        Log.d("deb","5");
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(jigatala, 15f));
         setUpMap();
 
@@ -616,6 +740,11 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
             ActivityCompat.requestPermissions(firstActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         }
         else {
+
+                //progressDialog.setMessage("Searching your bus...");
+//                progressDialog.setCanceledOnTouchOutside(false);
+//                progressDialog.show();
+
             Log.d("jobaid", "firstactivity : setUpMap [setup success]");
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -649,11 +778,15 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                                             if(GlobalClass.pp==1)
                                             {
                                                 GlobalClass.pp=0;
+                                                Log.d("deb","6");
+
                                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(busLocation, 15f));
 
                                             }
                                             else
-                                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));
+                                            {
+                                                Log.d("deb","7");
+                                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));}
 
 
                                         }
@@ -665,6 +798,8 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                                     handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
+
+                                            Log.d("deb","8");
 
                                             // Toast.makeText(firstActivity.this,currentLatLng.toString()+" sakib",Toast.LENGTH_LONG).show();
                                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f));
@@ -683,6 +818,8 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         if(busLocation!=null)
         {
             Log.d("sss","one");
+            Log.d("deb","9");
+
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(busLocation,zoom));
 
         }
@@ -711,12 +848,20 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
         if(user)
         {
+            Log.d("deb","10");
+
+
+
             Toast.makeText(firstActivity.this,"hoyna ken",Toast.LENGTH_SHORT).show();
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,zoom));
 
         }
-        if(admin)
+        if(admin) {
+
+            Log.d("deb","11");
+
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, zoom));
+        }
 
 
     }
@@ -775,6 +920,7 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void run() {
                     Log.d("jobaid","markerLocBus22");
+                    Log.d("deb","12");
 
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LL, 15f));
                 }
@@ -880,92 +1026,6 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private   void busGeofenceAlertDialog()  {
-
-        Log.d("jobaid", "firstactivity : alertdialog");
-        dialog = new AlertDialog.Builder(firstActivity.this);
-
-        dialog.setTitle("Bus Notification");
-        dialog.setIcon(R.drawable.bus_enter);
-        dialog.setMessage(R.string.Bus_msg);
-
-
-
-        dialog.setPositiveButton("Stop Alarm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                defaultRingtone.stop();
-                myVib.cancel();
-
-            }
-        });
-        Log.d("jobaid","firstActivity:vox_rashidul");
-        alert =dialog.create();
-        alert.show();
-//        alert.show();
-//        if (!firstActivity.this.isFinishing()){
-//            alert.show();
-//        }
-//        else                     alert.show();
-
-        alert.setCanceledOnTouchOutside(false);
-        alert.setCancelable(false);
-    }
-
-    private void busGeofenceAlarm()  {
-
-        uri = RingtoneManager.getActualDefaultRingtoneUri(firstActivity.this.getApplicationContext(), RingtoneManager.TYPE_ALARM);
-        defaultRingtone = RingtoneManager.getRingtone(firstActivity.this, uri);
-        myVib = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
-
-        am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-        if(am.getRingerMode()== AudioManager.RINGER_MODE_NORMAL)
-        {
-            defaultRingtone.play();
-            //myVib.vibrate(pattern,0);
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(myVib.hasVibrator())
-                    {
-                        alert.dismiss();
-                        alert.cancel();
-                        Log.d("jobaid","firstActivity:hasVibrator");
-                        myVib.cancel();
-                        defaultRingtone.stop();
-                    }
-
-                }
-            },20000);
-        }
-        else if(am.getRingerMode()==AudioManager.RINGER_MODE_VIBRATE || am.getRingerMode()==AudioManager.RINGER_MODE_SILENT)
-        {
-
-            Log.d("jobaid","firstActivity:ringerMode");
-            defaultRingtone.play();
-            //myVib.vibrate(pattern,0);
-
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(myVib.hasVibrator())
-                    {
-                        Log.d("jobaid","firstActivity:hasVibrator");
-
-                        alert.dismiss();
-                        alert.cancel();
-                        myVib.cancel();
-                    }
-
-                }
-            }, 20000);
-
-        }
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -976,7 +1036,6 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         switch (id) {
             case R.id.nav_busReminder:
                 oncealarm=true;
-
                 intent = new Intent(firstActivity.this,GeofenceSettings1.class);
                 intent.putExtra("purpose","busReminder");
                 startActivity(intent);
@@ -1001,6 +1060,24 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
             case R.id.nav_settings:
                 intent = new Intent(firstActivity.this, SettingsPage.class);
                 intent.putExtra("name","Settings Page");
+                startActivity(intent);
+                break;
+
+            case R.id.nav_busAdmin:
+                intent = new Intent(firstActivity.this, AdminsPage.class);
+                intent.putExtra("name","Bus Admin Page");
+                startActivity(intent);
+                break;
+
+            case R.id.nav_feedback:
+                intent = new Intent(firstActivity.this, FeedbackPage.class);
+                intent.putExtra("name","Bus Admin Page");
+                startActivity(intent);
+                break;
+
+            case R.id.nav_about:
+                intent = new Intent(firstActivity.this, About.class);
+                intent.putExtra("name","About Page");
                 startActivity(intent);
                 break;
 
@@ -1114,7 +1191,8 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         {
             Log.d("jobaid",((GlobalClass)firstActivity.this.getApplication()).BusName);
             Log.d("jobaid","pippipff");
-            b = new BusAndTime(((GlobalClass)firstActivity.this.getApplication()).BusName);
+            context=this;
+            b = new BusAndTime(((GlobalClass)firstActivity.this.getApplication()).BusName,context);
             time = b.getTime();
             listViewDogs.setAdapter(dogsAdapter(time));
 
@@ -1177,43 +1255,24 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         Log.d("jobaid", "firstActivity:onRequest");
         if (requestCode == 123 && grantResults.length > 0) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("cheeking","one");
                 setUpMap();
 
             } else {
+                Log.d("cheeking","two");
 
                 finishAffinity();
                 System.exit(0);
             }
-        } else {
-
-            finishAffinity();
-            System.exit(0);
         }
+// else {
+//
+//            Log.d("cheeking","three");
+//
+//            finishAffinity();
+//            System.exit(0);
+//        }
     }
-
-//    private void alertMethod() {
-//
-//        Log.d("jobaid", "firstactivity : alertMethod [alertdialog]");
-//        final Context context = firstActivity.this;
-//        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-//        dialog.setTitle(R.string.GPS_unavailable);
-//        dialog.setMessage(R.string.GPS_msg);
-//
-//        dialog.setPositiveButton("GPS settings", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//
-//                check = true;
-//                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//                context.startActivity(intent);
-//
-//            }
-//        });
-//        alert = dialog.create();
-//        alert.show();
-//        alert.setCanceledOnTouchOutside(false);
-//        alert.setCancelable(false);
-//    }
 
     @Override
     public void onClick(View v) {
@@ -1221,20 +1280,32 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
         if(v.getId()==R.id.fabloc && admin)
         {
             zoom=15f;
+            Log.d("deb","13");
+
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,zoom));
 
         }
 
         if (v.getId() == R.id.fabloc&&user) {
 
+            //region network checking
             if(!isNetworkConnected(firstActivity.this))
             {
                 Log.d("sss","two");
+                Log.d("deb","14");
 
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,zoom));
+                //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,zoom));
                 Toast.makeText(firstActivity.this,"Network Connection Required",Toast.LENGTH_LONG).show();
                 return ;
             }
+
+            if(userselectionBus.equals("BUS")||userselectionTime.equals("TIME"))
+            {
+                Toast.makeText(this,"You haven't searched any bus yet",Toast.LENGTH_LONG).show();
+                return ;
+            }
+            //endregion
+            Log.d("jobaid","jobaid");
             ++locBus;
 
 //            if(locBus==1)
@@ -1256,26 +1327,24 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 //            }
             if(locBus%2==1)
             {
-                Log.d("jobaid","firstactivity:fabLoc " + locBus);
-                if(locBus==1)
-                {
-                    Log.d("pppp","four");
-                    Log.d("sss","four");
+                Log.d("jobaid","firstactivity:fa bLoc " + locBus);
+//                if(locBus==1)
+//                {
+//
+//                    Log.d("deb","15");
+//
+//                    fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_bus));
+//                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,zoom));
+//                    return ;}
 
-                    fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_bus));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,zoom));
-                    return ;}
-
-                Log.d("sss","five");
-
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,zoom));
-                Log.d("pppp","five");
-
+                Log.d("deb","16");
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(GlobalClass.currentlat,GlobalClass.currentlon),15f));
                 fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_bus));
                 freeze=false;
             }
             else
             {
+
 
                 Log.d("jobaid","firstactivity:fabBus " + locBus);
                 zoom=15f;
@@ -1288,20 +1357,22 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
                     if(GlobalClass.first==0)
                     {
                         fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_location));
+                        Log.d("deb","17");
 
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(busLocation,zoom));
                         ++locBus;
                         return ;
 
                     }
+                    Log.d("deb","18");
+
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,zoom));
                     fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_bus));
 
                     return ;
                 }
-                Log.d("pppp","seven");
 
-                Log.d("sss","seven");
+                Log.d("deb","19");
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(busLocation,zoom));
                 fab.setImageDrawable(ContextCompat.getDrawable(firstActivity.this, R.drawable.my_location));
@@ -1461,20 +1532,20 @@ public class firstActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
-            case R.id.tool_notification:
-                Toast.makeText(this,"fuck you",Toast.LENGTH_LONG).show();
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.toolbar_menu,menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId())
+//        {
+//            case R.id.tool_notification:
+//                Toast.makeText(this,"Notification Toast",Toast.LENGTH_LONG).show();
+//
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 }

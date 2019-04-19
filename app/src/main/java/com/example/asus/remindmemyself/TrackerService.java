@@ -27,6 +27,7 @@ import com.google.android.gms.location.LocationServices;
 
 public class TrackerService extends Service {
 
+    public static TrackerService trackerService;
     private static boolean boolflag = true;
     private static final String TAG = TrackerService.class.getSimpleName();
     private static Location newCenterLocation = null, userLocation = null;
@@ -47,6 +48,7 @@ public class TrackerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        trackerService=this;
         client = LocationServices.getFusedLocationProviderClient(this);
         boolflag = true;
         Log.d("jobaid", "TrackerService:onCreate");
@@ -163,7 +165,7 @@ public class TrackerService extends Service {
             CharSequence name = "channel one";
             String description = "this is channel one method";
             int importance = NotificationManager.IMPORTANCE_NONE;
-            NotificationChannel channel = new NotificationChannel("2", name, importance);
+            NotificationChannel channel = new NotificationChannel("3", name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
             // or other notification_avail behaviors after this
@@ -222,11 +224,18 @@ public class TrackerService extends Service {
         public void onReceive(Context context, Intent intent) {
             Log.d("jobaid", "TrackerService:onReceive");
             if (Build.VERSION.SDK_INT > 22) {
+                Log.d("qwer","22 greater loc");
+                Toast.makeText(TrackerService.this, "Location Alarm is cancelled", Toast.LENGTH_LONG).show();
                 GlobalClass.selfdestroy = true;
                 unregisterReceiver(stopReceiver);
                 stopSelf();
             } else
                 onDestroy();
+            GlobalClass.locAlarm=0;
+            GlobalClass.centreLoc=null;
+            GlobalClass.locradius=0;
+            Log.d("qwer","22 lesser loc");
+
             Toast.makeText(TrackerService.this, "Location Alarm is cancelled", Toast.LENGTH_LONG).show();
 
         }

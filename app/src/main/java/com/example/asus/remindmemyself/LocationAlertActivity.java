@@ -79,6 +79,7 @@ public class LocationAlertActivity extends AppCompatActivity implements View.OnC
 
         Log.d("bangladesh","la");
         //defaultRingtone.stop();
+        GlobalClass.locAlarm=0;
         player.stop();
         myVib.cancel();
         GlobalClass.ct=1;

@@ -14,6 +14,7 @@ public class RecylerViewActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ScheduleAdapter scheduleAdapter;
     List<Schedule> scheduleList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +33,7 @@ public class RecylerViewActivity extends AppCompatActivity {
         {
             scheduleList = new ArrayList<>();
             recyclerView=(RecyclerView)findViewById(R.id.recyclerView);
-            //recyclerView.setHasFixedSize(true);
+            recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             scheduleList.add(new Schedule("Anando"));
             scheduleList.add(new Schedule("Boishakhi"));
@@ -57,7 +58,7 @@ public class RecylerViewActivity extends AppCompatActivity {
         {
             scheduleList = new ArrayList<>();
             recyclerView=(RecyclerView)findViewById(R.id.recyclerView);
-            //recyclerView.setHasFixedSize(true);
+            recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             scheduleList.add(new Schedule(" Anando"));
             scheduleList.add(new Schedule(" Boishakhi"));

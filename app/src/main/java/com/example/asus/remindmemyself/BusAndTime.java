@@ -1,13 +1,59 @@
 package com.example.asus.remindmemyself;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.StringTokenizer;
+
+import static android.content.Context.MODE_PRIVATE;
+
 public class BusAndTime {
 
+    SharedPreferences mPreferences;
+    DatabaseReference firebaseDatabase;
     String name;
     String def[] = null;
-
-    BusAndTime(String  name)
+    Context context;
+    BusAndTime(String  name,Context context)
     {
         this.name=name;
+        this.context=context;
+        firebaseDatabase= FirebaseDatabase.getInstance().getReference().child("Bus_Schedule");
+        firebaseDatabase.keepSynced(true);
+        Log.d("sabeek","age");
+
+        firebaseDatabase.child(name).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Log.d("toads",String.valueOf(dataSnapshot.getChildrenCount()));
+                  GlobalClass.childcount= (int) dataSnapshot.getChildrenCount();
+
+                Log.d("sabeek","pore");
+
+
+                if(GlobalClass.listTaranga.size()!=0)
+                    GlobalClass.listTaranga.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Log.d("toot",snapshot.getKey());
+                    GlobalClass.listTaranga.add(snapshot.getKey().toString());
+                    Log.d("toad",String.valueOf(GlobalClass.listTaranga.size()));
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
     }
 
     public String[] getTime() {
@@ -75,7 +121,22 @@ public class BusAndTime {
 
         else if(name.equals("Taranga"))
         {
-            String time[] = {"7:00 up","7:30 up","8:00 up","8:30 up","9:00 up","10:00 up","12:15 down","1:30 down","2:30 down","3:30 down","4:30 down","5:00 down","5:30 down"};
+
+            String s;
+            mPreferences = context.getSharedPreferences("hellosakib", MODE_PRIVATE);
+            s= mPreferences.getString("Taranga", "");
+            int x=s.length(),count=0,l=0;
+            for(int i=0;i<x;i++)
+            {
+                if(s.charAt(i)=='$')count++;
+            }
+            String[] time = new String[count];
+            StringTokenizer stx = new StringTokenizer(s,"$");
+            while(stx.hasMoreElements())
+            {
+                time[l++]= (String) stx.nextElement();
+            }
+
             return time;
         }
         else if(name.equals("Ullash"))

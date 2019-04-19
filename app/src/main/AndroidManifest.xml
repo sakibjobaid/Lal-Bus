@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".GlobalClass"
@@ -17,9 +18,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/my_bus" />
+        <!--
+             Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/traffic" />
+
+        <!-- [START fcm_disable_auto_init] -->
+        <meta-data
+            android:name="firebase_messaging_auto_init_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
+        <!-- [END fcm_disable_auto_init] -->
 
         <activity
             android:name=".firstActivity"
@@ -57,15 +79,18 @@
         </activity>
         <activity
             android:name=".AdminLoginPage"
+            android:parentActivityName=".StartActiviy"
             android:screenOrientation="portrait" />
         <activity
             android:name=".UserLoginPage"
+            android:parentActivityName=".StartActiviy"
             android:screenOrientation="portrait" />
         <activity
             android:name=".testing"
             android:screenOrientation="portrait" />
         <activity
             android:name=".AdminOptions"
+            android:parentActivityName=".StartActiviy"
             android:screenOrientation="portrait" />
 
         <receiver
@@ -100,7 +125,9 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".SettingsPage" />
+        <activity
+            android:name=".SettingsPage"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".AdminBackground"
@@ -108,6 +135,30 @@
             android:exported="false">
             android:stopWithTask="false"
         </service>
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".AdminsPage"
+            android:parentActivityName=".StartActiviy"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".FeedbackPage"
+            android:parentActivityName=".StartActiviy"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".ScheduleCardActivity"></activity>
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <activity android:name=".About"></activity>
     </application>
 
 </manifest>

@@ -72,6 +72,7 @@ public class BusReminderAlertActivity extends AppCompatActivity implements View.
 
         Log.d("bangladesh","las");
         //defaultRingtone.stop();
+        GlobalClass.busAlarm=0;
         player.stop();
         myVib.cancel();
         finish();

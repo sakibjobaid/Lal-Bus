@@ -31,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class BusTrackerService extends Service {
 
+    public static BusTrackerService busTrackerService;
     private boolean boolflag=true,alarmflag=true,oncealarm=false;
     private static final String TAG = TrackerService.class.getSimpleName();
     private static Location newCenterLocation=null,userLocation=null;
@@ -53,6 +54,7 @@ public class BusTrackerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        busTrackerService=this;
         client= LocationServices.getFusedLocationProviderClient(this);
         Log.d("jobaid","BusTrackerService:onCreate");
     }
@@ -131,7 +133,6 @@ public class BusTrackerService extends Service {
             Log.d("jobaid","BusTrackerService: newCenter!=null "+String.valueOf(dis));
             if(dis<=GeofenceSettings1.radius )
             {
-                stopSelf();
                 Log.d("jobaid","BusTrackerService:dis");
                 alarmflag=false;
                 if(oncealarm )
@@ -223,11 +224,19 @@ public class BusTrackerService extends Service {
             GlobalClass.selfdestroy=true;
             if (Build.VERSION.SDK_INT >22)
             {
+                Log.d("qwer","22 greater bus");
+                Toast.makeText(BusTrackerService.this, "Location Alarm is cancelled", Toast.LENGTH_LONG).show();
+
                 unregisterReceiver(stopReceiver);
                 stopSelf();
             }
             else
                 onDestroy();
+            GlobalClass.busAlarm=0;
+            GlobalClass.busLoc=null;
+            GlobalClass.busradius=0;
+            Log.d("qwer","22 lesser bus");
+
             Toast.makeText(BusTrackerService.this,"Bus Reminder is cancelled",Toast.LENGTH_LONG).show();
 
         }

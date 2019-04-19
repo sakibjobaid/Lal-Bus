@@ -13,13 +13,15 @@ import android.widget.TextView;
 public class DogsDropdownOnItemClickListener implements OnItemClickListener {
 
 
+    Context mContext;
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
 
         int id= v.getId();
+
         // get the context and main activity to access variables
-        Context mContext = v.getContext();
+        mContext = v.getContext();
         firstActivity mainActivity = ((firstActivity) mContext);
 
         // add some animation when a list item was clicked
@@ -50,10 +52,13 @@ public class DogsDropdownOnItemClickListener implements OnItemClickListener {
             GlobalClass.BusName=selectedItemText;
             Log.d("problem1",selectedItemText);
             mainActivity.buttonBus.setText(selectedItemText);
-            BusAndTime b= new BusAndTime(selectedItemText);
+
+
+
+            BusAndTime b= new BusAndTime(selectedItemText,mContext);
             String[] time= b.getTime();
-            Log.d("jobaid","problemsss");
-            mainActivity.buttonTime.setText(time[0]);
+            Log.d("abcde","problemsss");
+            mainActivity.buttonTime.setText("TIME");
 
         }
 

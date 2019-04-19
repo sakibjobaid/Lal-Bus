@@ -26,6 +26,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
 
     @NonNull
     @Override
+
     public ScheduleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater inflater = LayoutInflater.from(cntxt);
         View view = inflater.inflate(R.layout.list_layout,null);
@@ -47,6 +48,20 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
                     intent.putExtra("name","Taranga");
                     v.getContext().startActivity(intent);
                 }
+
+                else if(schedule.getName().equals("Ullash"))
+                {
+                    Intent intent = new Intent(v.getContext(),ScheduleImage.class);
+                    intent.putExtra("name","Ullash");
+                    v.getContext().startActivity(intent);
+                }
+                else if(schedule.getName().equals("Boishakhi"))
+                {
+                    Intent intent = new Intent(v.getContext(),ScheduleImage.class);
+                    intent.putExtra("name","Boishakhi");
+                    v.getContext().startActivity(intent);
+                }
+
                 else if(schedule.getName().equals(" Taranga"))
                 {
 
@@ -91,6 +106,50 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
 
                     Intent intent = new Intent(v.getContext(),MapsActivity.class);
                     intent.putExtra("name"," Srabon");
+                    v.getContext().startActivity(intent);
+                }
+
+                else if(schedule.getName().equals(" Kinchit"))
+                {
+
+                    Intent intent = new Intent(v.getContext(),MapsActivity.class);
+                    intent.putExtra("name"," Kinchit");
+                    v.getContext().startActivity(intent);
+                }
+                else if(schedule.getName().equals(" Choitaly"))
+                {
+
+                    Intent intent = new Intent(v.getContext(),MapsActivity.class);
+                    intent.putExtra("name"," Choitaly");
+                    v.getContext().startActivity(intent);
+                }
+                else if(schedule.getName().equals(" Anando"))
+                {
+
+                    Intent intent = new Intent(v.getContext(),MapsActivity.class);
+                    intent.putExtra("name"," Anando");
+                    v.getContext().startActivity(intent);
+                }
+                else if(schedule.getName().equals(" Boshonto"))
+                {
+
+                    Intent intent = new Intent(v.getContext(),MapsActivity.class);
+                    intent.putExtra("name"," Boshonto");
+                    v.getContext().startActivity(intent);
+                }
+
+                else if(schedule.getName().equals(" Ishakha"))
+                {
+
+                    Intent intent = new Intent(v.getContext(),MapsActivity.class);
+                    intent.putExtra("name"," Ishakha");
+                    v.getContext().startActivity(intent);
+                }
+                else if(schedule.getName().equals(" Hemonto"))
+                {
+
+                    Intent intent = new Intent(v.getContext(),MapsActivity.class);
+                    intent.putExtra("name"," Hemonto");
                     v.getContext().startActivity(intent);
                 }
 
