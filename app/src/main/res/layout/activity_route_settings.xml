@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RouteSettings">
+
+    <FrameLayout
+        android:layout_weight="100"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        tools:ignore="Suspicious0dp">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_marginTop="100dp"
+            app:cardCornerRadius="20dp">
+
+            <fragment
+
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                android:id="@+id/autocompleteR_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabsave"
+            android:layout_gravity="right|top"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="120dp"
+            android:backgroundTint="@color/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="center"
+            android:src="@drawable/forward" />
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+
+            android:layout_centerInParent="true"
+            android:id="@+id/marker"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
+            android:contentDescription="@string/marker_content_description"
+            android:src="@drawable/marker_draw" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabreverse"
+            android:layout_gravity="left|bottom"
+            android:layout_marginLeft="100dp"
+            android:layout_marginBottom="25dp"
+            android:backgroundTint="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="center"
+            android:src="@drawable/undo" />
+
+        <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabput"
+        android:layout_gravity="right|bottom"
+        android:layout_marginRight="100dp"
+        android:layout_marginBottom="25dp"
+        android:backgroundTint="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="center"
+        android:src="@drawable/put_mark" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabStoppage"
+            android:layout_gravity="right|bottom"
+            android:layout_marginRight="100dp"
+            android:layout_marginBottom="25dp"
+            android:backgroundTint="@color/quantum_yellow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="center"
+            android:src="@drawable/stoppage_icon" />
+
+
+    </FrameLayout>
+
+
+
+
+
+
+</LinearLayout>
