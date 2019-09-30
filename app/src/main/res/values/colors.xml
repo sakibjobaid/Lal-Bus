@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#2F1B74</color>
     <color name="colorAccent">#2F1B74</color>
     <color name="location">#0cb106</color>
+    <color name="alert">#0f6e0c</color>
     <color name="traffic">#ce0c0c</color>
     <color name="navigation">#f0f40f</color>
     <color name="border">#2F1B74</color>
     <color name="ripple">#c5b7f1</color>
     <color name="white">#ffffff</color>
+    <color name="grey_5">#f2f2f2</color>
     <color name="button">#2A219E</color>
+    <color name="blue_500">#2196F3</color>
+    <color name="grey_90">#263238</color>
+    <color name="red_600">#E53935</color>
+    <color name="black">#030303</color>
 
 </resources>

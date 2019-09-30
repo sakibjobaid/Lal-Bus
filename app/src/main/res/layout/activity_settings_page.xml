@@ -4,34 +4,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     android:layout_height="match_parent"
-    tools:context=".SettingsPage">
-    <Button
-        android:id="@+id/choose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="Choose File"/>
+    tools:context=".AdminLoginPage">
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/toolbar" />
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:id="@+id/progressbar"/>
-
-    <ImageView
-        android:layout_weight="7"
-        android:id="@+id/img"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp" />
-    <Button
-        android:id="@+id/upload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Upload File"
-        android:textAlignment="center"/>
+    <LinearLayout
+        android:paddingBottom="40dp"
+        android:paddingTop="40dp"
+        android:orientation="vertical"
+        android:layout_weight="4"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
 
 
 
+        <TextView
+            android:textSize="20sp"
+            android:text="@string/op_mode"
+            android:textAlignment="center"
+            android:textColor="@color/button"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/emailText"/>
+
+        <Button
+            android:layout_marginTop="30dp"
+            android:id="@+id/addButton"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:background="@drawable/signbutton_back"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="ADD BUS"/>
+
+        <Button
+            android:layout_marginTop="30dp"
+            android:id="@+id/deleteButton"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:background="@drawable/signbutton_back"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="DELETE BUS"/>
+
+        <Button
+            android:layout_marginTop="30dp"
+            android:id="@+id/password"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:background="@drawable/signbutton_back"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="PASSWORDS"/>
+
+        <Button
+            android:layout_marginTop="30dp"
+            android:id="@+id/routeChange"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:background="@drawable/signbutton_back"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="ROUTE SETTINGS"/>
+
+    </LinearLayout>
 
 </LinearLayout>

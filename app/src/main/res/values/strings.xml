@@ -1,15 +1,19 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Lal Bus</string>
     <string name="title_activity_first">MapMyself</string>
     <string name="bus">BUS</string>
     <string name="time">TIME</string>
+    <string name="op_mode">Choose your operation mode !!</string>
+    <string name="type_mode">Choose your entry mode !!</string>
     <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
     <string name="busGeofence">Bus Reminder</string>
     <string name="locationAlarm">Location Alarm</string>
     <string name="feedback">Feedback</string>
-    <string name="admin_settings">Admin Settings</string>
+    <string name="sakib_settings">Sakib Settings</string>
     <string name="turn_off">Turn off</string>
-    <string name="bus_admin">Bus Admin</string>
+    <string name="admin_profile">Admin Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="app_credit">Contributor</string>
     <string name="about">About</string>
     <string name="settings">Bus Schedule</string>
     <string name="network_unavailable">Network Connection Unavailable</string>
@@ -18,7 +22,7 @@
     <string name="Bus_msg">Your selected bus entered in your zone !!!</string>
     <string name="GPS_msg">Please enable your GPS/Location Service and High Accuracy as locating method</string>
     <string name="network_msg">Please enable your network connection and try again</string>
-    <string name="route">Route and Stoppage</string>
+    <string name="route">Route</string>
     <string name="instruction_where_description">Where do you want to be reminded?</string>
     <string name="instruction_where_subtitle_description">Drag the map to set the location</string>
     <string name="instruction_radius_description">Choose the radius</string>
@@ -30,6 +34,14 @@
     <string name="nav_open_drawer">open drawer</string>
     <string name="nav_close_drawer">close drawer</string>
     <string name="admin_mode">You are in admin mode.</string>
+    <string name="guidance">Guidance &amp; Supervision</string>
+    <string name="Tauhid_vai">22nd Batch"\n"Dept of CSE"\n"University of Dhaka</string>
+
+    <string name="develop">Development &amp; Maintenance</string>
+    <string name="sakib">23rd Batch"\n"Dept of CSE"\n"University of Dhaka</string>
+
+    <string name="datacollection">Data Collection</string>
+    <string name="csedu">University of Dhaka</string>
     <string name="marker_tap">Route may change in any unavoidable situation.  Tap on marker to see stoppage location.</string>
 
     <string name="reminder_removal_alert">Remove reminder?</string>
@@ -40,6 +52,109 @@
     <string name="reminder_removed_success">Reminder removed!</string>
 
     <string name="marker_content_description">Marker</string>
+
+    <string name="Firebase_aage">AAGE</string>
+    <string name="Firebase_admin">ADMIN</string>
+    <string name="Firebase_admins_feedback">ADMINS_FEEDBACK</string>
+    <string name="Firebase_admin_list">ADMIN_LIST</string>
+    <string name="Firebase_admin_profile">ADMIN_PROFILE</string>
+    <string name="Firebase_admin_history">ADMIN_HISTORY</string>
+    <string name="Firebase_admin_radius_aage">ADMIN_RADIUS_AAGE</string>
+    <string name="Firebase_admin_radius_pore">ADMIN_RADIUS_PORE</string>
+    <string name="Firebase_adminRoster">ADMIN_ROSTER</string>
+    <string name="Firebase_busSchedule">BUS_SCHEDULE</string>
+    <string name="Firebase_date">DATE</string>
+    <string name="Firebase_feedback">FEEDBACK</string>
+    <string name="Firebase_firstLogin">FIRST_LOGIN</string>
+    <string name="Firebase_admin_force_out_aage">FORCE_OUT_AAGE</string>
+    <string name="Firebase_admin_force_out_pore">FORCE_OUT_PORE</string>
+    <string name="Firebase_freshness">FRESHNESS</string>
+    <string name="Firebase_masterAdmin">MASTER_ADMIN</string>
+    <string name="Firebase_password">PASSWORDS</string>
+    <string name="Firebase_pore">PORE</string>
+    <string name="Firebase_route">ROUTE</string>
+    <string name="Firebase_stoppage">STOPPAGE</string>
+    <string name="Firebase_time">TIME</string>
+    <string name="Firebase_timestamp">TIMESTAMP</string>
+
+
+
+    <string name="time_pref_file">hellotime</string>
+    <string name="schedule_pref_file">helloschedule</string>
+    <string name="pass_pref_file">hellopassword</string>
+    <string name="first_pref_file">hellofirst</string>
+    <string name="route_pref_file">helloroute</string>
+    <string name="repeatTime_pref_file">hellorepeatTime</string>
+    <string name="busName_pref_file">helloBusNameKey</string>
+    <string name="date_pref_file">hellodate</string>
+    <string name="master_pref_file">hellomaster</string>
+    <string name="stoppage_pref_file">hellostoppage</string>
+    <string name="adminHoise_pref_file">helloadminHoise</string>
+    <string name="admin_radius_pore_pref_file">helloadminradiuspore</string>
+    <string name="admin_aage_pref_file">helloadminaage</string>
+    <string name="admin_pore_pref_file">helloadminpore</string>
+    <string name="admin_radius_aage_pref_file">helloadminradiusaage</string>
+    <string name="password_string_pref_file">hellopassword_string_pref</string>
+    <string name="phone_pref_file">hellonumber</string>
+    <string name="bus_name_pref_file">hellobusname</string>
+    <string name="bus_time_pref_file">hellobustime</string>
+    <string name="imageURL_pref_file">helloImageURL</string>
+    <string name="globalclass_profile_name_pref_file">helloProfileName</string>
+    <string name="globalclass_dept_name_pref_file">helloDeptName</string>
+    <string name="globalclass_contact_name_pref_file">helloContactName</string>
+    <string name="globalclass_mail_name_pref_file">helloMailName</string>
+    <string name="globalclass_fb_name_pref_file">helloFbName</string>
+    <string name="globalclass_trip_name_pref_file">helloTripNumber</string>
+    <string name="globalclass_upTrip_name_pref_file">hello_upTripNumber</string>
+    <string name="globalclass_downTrip_name_pref_file">hello_downTripNumber</string>
+    <string name="globalclass_picString_name_pref_file">helloPicString</string>
+
+    <string name="pic_show_pref_file">hellopic_show</string>
+    <string name="fb_show_pref_file">hellofb_show</string>
+    <string name="contact_show_pref_file">hellocontact_show</string>
+    <string name="mail_show_pref_file">hellomail_show</string>
+    <string name="passVersion_pref_file">helloPassVersion</string>
+    <string name="timeVersion_pref_file">helloTimeVersion</string>
+    <string name="routeVersion_pref_file">helloRouteVersion</string>
+    <string name="stoppageVersion_pref_file">helloStoppageVersion</string>
+    <string name="masterVersion_pref_file">helloMasterVersion</string>
+    <string name="scheduleVersion_pref_file">helloScheduleVersion</string>
+    <string name="adminsuccessful_up_pref_file">helloadminsuccessful_up</string>
+    <string name="adminsuccessful_down_pref_file">helloadminsuccessful_down</string>
+
+
+    <string name="phone_number_getter">phone_number</string>
+    <string name="bus_name_getter">Bus_Name</string>
+    <string name="bus_time_getter">Bus_Time</string>
+    <string name="date_getter">Date</string>
+    <string name="route_getter">Route</string>
+    <string name="password_getter">Password</string>
+    <string name="master_getter">Master</string>
+    <string name="time_getter">Time</string>
+    <string name="schedule_getter">Schedule</string>
+    <string name="stoppage_getter">Stoppage</string>
+    <string name="busnamekey_getter">BusNameKey</string>
+    <string name="first_login_getter">first_sync</string>
+    <string name="admin_radius_aage_getter">admin_radius_aage</string>
+    <string name="admin_radius_pore_getter">admin_radius_pore</string>
+    <string name="admin_aage_getter">admin_aage</string>
+    <string name="admin_pore_getter">admin_pore</string>
+    <string name="trip_name_getter">trip_name</string>
+    <string name="up_trip_name_getter">up_trip_name</string>
+    <string name="down_trip_name_getter">down_trip_name</string>
+    <string name="profile_name_getter">profile_name</string>
+    <string name="dept_name_getter">dept_name</string>
+    <string name="mail_name_getter">mail_name</string>
+    <string name="fb_name_getter">fb_name</string>
+    <string name="profile_pic_name_getter">profile_pic_name</string>
+    <string name="contact_name_getter">contact_name</string>
+    <string name="contact_show_name_getter">contact_show_name</string>
+    <string name="admin_successful_up_getter">admin_successfull_up</string>
+    <string name="admin_successful_down_getter">admin_successfull_down</string>
+    <string name="adminHoise_getter">adminHoise?</string>
+
+    <string name="user_turn_off_string">If location alarm or bus reminder is running ,
+        you are requested to minimize the app.  Else you may exit.</string>
 
 
     <string-array name="BUS">
@@ -68,4 +183,18 @@
         <item>8:30 am</item>
         <item>10:00 am</item>
     </string-array>
+
+    <string-array name="direction">
+        <item>up</item>
+        <item>down</item>
+    </string-array>
+
+    <string-array name="route_number">
+        <item>Route1</item>
+        <item>Route2</item>
+        <item>Route3</item>
+        <item>Route4</item>
+        <item>Route5</item>
+    </string-array>
+    <string name="title_activity_route_settings">Map</string>
 </resources>

@@ -8,27 +8,26 @@
     tools:context=".LocationAlertActivity">
 
     <ImageView
-        android:layout_weight="4"
-        android:src="@drawable/final_alarm1"
         android:layout_width="wrap_content"
-        android:layout_height="0dp" />
+        android:layout_height="400dp"
+        android:layout_weight="0"
+        android:src="@drawable/final_alarm1" />
 
     <Button
-    android:layout_marginBottom="60dp"
-    android:layout_weight="0"
-    android:layout_marginRight="20sp"
-    android:layout_marginLeft="20dp"
-    android:id="@+id/StopAlarm"
-    android:background="@drawable/signbutton_back"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:gravity="center"
-    android:textColor="@color/white"
-    android:text="Stop Alarm"
-    android:textSize="20sp"
-    android:textAlignment="center"
-    />
+        android:id="@+id/StopAlarm"
+        android:layout_width="225dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20sp"
+        android:layout_weight="0"
+        android:background="@drawable/signbutton_back"
+        android:gravity="center"
+        android:text="Stop Alarm"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
 
 
 </LinearLayout>

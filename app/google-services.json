@@ -8,18 +8,34 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:307650464776:android:a0e932a4ef651a52",
+        "mobilesdk_app_id": "1:307650464776:android:205b5d3c878444a9",
         "android_client_info": {
-          "package_name": "com.example.asus.remindmemyself"
+          "package_name": "com.anything.asus.remindmemyself"
         }
       },
       "oauth_client": [
         {
-          "client_id": "307650464776-asi3gnmmv70fpd4167ppei3dkn51b9s7.apps.googleusercontent.com",
+          "client_id": "307650464776-hrcdegca98s0hb5amggs1o7frbmcgfkh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.asus.remindmemyself",
+            "package_name": "com.anything.asus.remindmemyself",
             "certificate_hash": "99b05638cc2f17515c385322deb21f06645c37e0"
+          }
+        },
+        {
+          "client_id": "307650464776-qqcldimska0do24jtj5ljr4tp0vd3til.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anything.asus.remindmemyself",
+            "certificate_hash": "01ae591b14ab231a291354a5b5c41ab5bb8b93e7"
+          }
+        },
+        {
+          "client_id": "307650464776-4llo66vnte7ktqa56kv1ej6m2tlseh1s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anything.asus.remindmemyself",
+            "certificate_hash": "33b5159ed7a844d86835fa743f900b4c6710a12b"
           }
         },
         {
@@ -33,20 +49,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "307650464776-045f3k4161okpoaqdc2md61i0vpgduqo.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }

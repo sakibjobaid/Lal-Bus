@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
+    android:id="@+id/parent_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -34,20 +36,18 @@
 
 
 
-            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:map="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
+            <fragment
                 android:id="@+id/map"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".firstActivity" />
+                android:layout_height="match_parent" />
+
             <ImageView
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@drawable/marker2"
+                android:src="@drawable/marker_draw"
                 android:id="@+id/iconid"
                 />
 
@@ -67,7 +67,7 @@
                     android:paddingRight="10dp"
                     android:layout_weight="6"
                     android:id="@+id/busBtn"
-                    android:drawableRight="@drawable/low1"
+
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/home"/>
@@ -78,7 +78,7 @@
                     android:layout_weight="6"
                     android:id="@+id/timeBtn"
                     android:background="@drawable/home_right_left_flat"
-                    android:drawableRight="@drawable/low1"
+                    android:text="cde"
                     android:paddingRight="10dp"
                      />
                 <Button
@@ -99,7 +99,7 @@
                 android:id="@+id/mywidget"
                 android:layout_margin="20dp"
                 android:textStyle="bold|normal"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textAlignment="center"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -145,10 +145,24 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/colorPrimaryDark"
-        app:itemTextColor="@color/white"
+        app:itemTextColor="@color/black"
         app:headerLayout="@layout/navigation"
         app:menu="@menu/navigation_menu" />
+
+    <!--<android.support.design.widget.NavigationView-->
+        <!--android:id="@+id/nav_time_line_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="end"-->
+        <!--android:background="@color/colorPrimaryDark"-->
+        <!--app:itemTextColor="@color/white"-->
+        <!--app:headerLayout="@layout/navigation" />-->
+
+
+
+
 </android.support.v4.widget.DrawerLayout>
+
+
 
 </LinearLayout>

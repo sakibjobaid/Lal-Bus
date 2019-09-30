@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:background="#00000000"
+    android:layout_height="450dp"
+    tools:context=".AdminLoginPage">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="436dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/custom_layout_edge">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="202dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="Hey"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.02" />
+
+
+        <TextView
+            android:id="@+id/textNameRem"
+            android:layout_width="202dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="Sakib Jobaid"
+            android:textAlignment="center"
+            android:textColor="@color/button"
+            android:textSize="20dp"
+            android:textStyle="italic|bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.08" />
+
+        <ImageView
+            android:layout_width="118dp"
+            android:layout_height="190dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/timeline_layout_edge"
+            android:padding="1dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/edit_profile_reminder2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.857"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.38" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="118dp"
+            android:layout_height="190dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/timeline_layout_edge"
+            android:padding="1dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/edit_profile_reminder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.142"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.38" />
+
+        <TextView
+            android:id="@+id/textInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="You can configure your profile from navigation drawer !!!"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.84000003" />
+
+
+        <Button
+            android:id="@+id/buttonGOT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="8dp"
+            android:background="#00000000"
+            android:text="GOT IT"
+            android:textColor="@color/button"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.521"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView4"
+            app:layout_constraintVertical_bias="0.88" />
+
+    </android.support.constraint.ConstraintLayout>
+
+
+
+
+
+
+
+
+</FrameLayout>
+
+
+
+
+

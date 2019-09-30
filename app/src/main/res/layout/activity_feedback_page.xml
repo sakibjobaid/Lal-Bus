@@ -22,22 +22,22 @@
             android:padding="20dp"
             android:background="@drawable/feedback_background"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="12"
+            android:layout_height="400dp"
+            android:layout_weight="0"
             android:hint="Any problem/suggestion about the app....."
             android:gravity="start" />
 
         <Button
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
             android:id="@+id/feed_Button"
-            android:onClick="send"
-            android:textColor="@color/white"
-            android:layout_gravity="center"
-            android:background="@drawable/signbutton_back"
-            android:layout_width="300dp"
+            android:layout_width="184dp"
             android:layout_height="wrap_content"
-            android:text="Send Feedback"/>
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/signbutton_back"
+            android:onClick="send"
+            android:text="Send Feedback"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 

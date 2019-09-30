@@ -8,20 +8,16 @@
     android:layout_height="match_parent"
     tools:context=".AdminLoginPage">
     <LinearLayout
-
-        android:layout_marginTop="30dp"
         android:layout_weight="2"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="20dp">
         <ImageView
-
             android:layout_gravity="bottom"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginTop="0dp"
             android:src="@drawable/lal_bus" />
-
 
     </LinearLayout>
     <LinearLayout
@@ -35,35 +31,48 @@
 
 
         <TextView
-
+            android:layout_marginTop="10dp"
             android:textSize="20sp"
             android:text="Admin for Taranga 12:15 down"
             android:textAlignment="center"
             android:textColor="@color/button"
             android:layout_gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:id="@+id/emailText"/>
 
         <EditText
-            android:inputType="textPassword"
-            android:textAlignment="center"
-            android:hint="Admin Password"
-            android:background="@drawable/home_right_left_flat"
-            android:layout_gravity="center"
-            android:layout_width="330dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/nameText"
+            android:layout_width="265dp"
             android:layout_height="50dp"
-            android:id="@+id/passwordText"/>
+            android:layout_gravity="center"
+            android:background="@drawable/home_right_left_flat"
+            android:hint="Your Name"
+            android:textAlignment="center" />
+
+        <EditText
+
+            android:id="@+id/departmentText"
+            android:layout_width="265dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/home_right_left_flat"
+            android:hint="Department"
+            android:textAlignment="center" />
+
+
 
         <Button
-            android:layout_marginTop="30dp"
             android:id="@+id/logButton"
-            android:textColor="@color/white"
-            android:layout_gravity="center"
-            android:background="@drawable/signbutton_back"
-            android:layout_width="300dp"
+            android:layout_width="214dp"
             android:layout_height="wrap_content"
-            android:text="Sign In"/>
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/signbutton_back"
+            android:text="Continue"
+            android:textColor="@color/white" />
 
 
     </LinearLayout>

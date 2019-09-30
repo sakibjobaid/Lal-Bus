@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_margin="5dp"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+
+        android:layout_margin="5dp"
+        app:cardElevation="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/parent_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_weight="5"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/Name_Time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Chittagong Road 12:30 down2"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="18dp"
+                        tools:ignore="RtlCompat" />
+
+                    <TextView
+                        android:id="@+id/From_To"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Curzon Hall - Mohammadpur Bus stand"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="15dp"
+                        tools:ignore="RtlCompat" />
+
+                    <TextView
+                        android:id="@+id/Timer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="CSE"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="18dp"
+                        tools:ignore="RtlCompat" />
+
+                </LinearLayout>
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="1">-->
+
+                    <!--<de.hdodenhof.circleimageview.CircleImageView-->
+                        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+                        <!--android:id="@+id/fab_route"-->
+                        <!--android:layout_width="40dp"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:foregroundGravity="center"-->
+                        <!--android:src="@drawable/way"-->
+                        <!--app:civ_border_color="@color/colorPrimary"-->
+                        <!--app:civ_border_width="1dp"-->
+                        <!--/>-->
+
+                <!--</LinearLayout>-->
+
+            </LinearLayout>
+
+            <!--<ImageView-->
+            <!--android:layout_marginTop="2dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:src="@drawable/stripe"/>-->
+
+
+
+
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+
+</LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,9 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+    android:orientation="vertical"
+
     tools:context=".About">
 
-</android.support.constraint.ConstraintLayout>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:text="@string/guidance"
+                android:textAlignment="center"
+                android:textColor="@color/button"
+                android:textSize="25sp"
+                android:textStyle="normal|italic|bold" />
+
+        <TextView
+            android:id="@+id/tauhidID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tauhid Tanjim"
+            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textSize="25sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:textColor="@color/black"
+                android:text="@string/Tauhid_vai"
+                android:textAlignment="center"
+                android:textSize="25sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:text="@string/develop"
+                android:textAlignment="center"
+                android:textColor="@color/button"
+                android:textSize="25sp"
+                android:textStyle="normal|italic|bold" />
+
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/sakibID"
+            android:singleLine="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sakib Jobaid"
+            android:textAlignment="center"
+            android:textSize="25sp" />
+
+            <TextView
+                android:singleLine="false"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:text="@string/sakib"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:textSize="25sp" />
+
+            <TextView
+                android:singleLine="false"
+                android:textSize="25sp"
+                android:textAlignment="center"
+                android:textColor="@color/button"
+                android:textStyle="normal|italic|bold"
+                android:text="@string/datacollection"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:textColor="@color/black"
+                android:text="@string/csedu"
+                android:textAlignment="center"
+                android:textSize="25sp" />
+
+</LinearLayout>

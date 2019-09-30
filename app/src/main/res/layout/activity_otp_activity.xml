@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_height="match_parent"
+    tools:context=".AdminLoginPage">
+    <LinearLayout
+
+
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <ImageView
+
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginTop="0dp"
+            android:src="@drawable/lal_bus" />
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:paddingBottom="40dp"
+        android:paddingTop="0dp"
+        android:orientation="vertical"
+        android:layout_weight="6"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+
+
+        <TextView
+
+            android:textSize="20sp"
+            android:text="Admin Verification"
+            android:textAlignment="center"
+            android:textColor="@color/button"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/emailText"/>
+
+        <EditText
+            android:id="@+id/et_phone_number"
+            android:layout_width="252dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/home_right_left_flat"
+            android:hint="Phone number"
+            android:inputType="phone"
+            android:textAlignment="center" />
+
+        <Button
+            android:id="@+id/btn_generate_otp"
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/signbutton_back"
+            android:text="Send Code"
+            android:textColor="@color/white" />
+
+        <EditText
+            android:id="@+id/et_otp"
+            android:layout_width="254dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/home_right_left_flat"
+            android:hint="Verification code"
+            android:inputType="phone"
+            android:textAlignment="center" />
+
+
+        <Button
+            android:id="@+id/btn_sign_in"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/signbutton_back"
+            android:text="Verify"
+            android:textColor="@color/white" />
+
+
+
+
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>

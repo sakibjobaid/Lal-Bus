@@ -10,10 +10,6 @@
     android:layout_height="match_parent"
     tools:context=".GeofenceSettings1">
 
-    <include
-        layout="@layout/toolbar"
-        android:id="@+id/toolbar" />
-
     <FrameLayout
         android:layout_weight="100"
         android:layout_width="match_parent"
@@ -25,10 +21,11 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_margin="5dp"
-          android:layout_marginTop="5dp"
+          android:layout_marginTop="100dp"
           app:cardCornerRadius="20dp">
 
           <fragment
+
               android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
               android:id="@+id/autocomplete_fragment"
               android:layout_width="match_parent"
@@ -43,7 +40,7 @@
             android:id="@+id/fabloc2"
             android:layout_gravity="right|top"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="80dp"
             android:backgroundTint="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,6 +52,17 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:id="@+id/textinfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:textStyle="bold|normal"
+            android:textColor="@color/border"
+            android:text="hello world"/>
 
         <ImageView
 
@@ -71,15 +79,11 @@
     </FrameLayout>
 
 
-    <ScrollView
-        android:layout_weight="40"
-        android:background="#ffffff"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
+
         <LinearLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="#ffffff"
             android:orientation="vertical">
@@ -126,18 +130,6 @@
 
 
 
-            <EditText
-                android:id="@+id/message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="13dp"
-                android:layout_marginRight="13dp"
-                android:layout_marginBottom="8dp"
-                android:hint="@string/message_hint"
-                android:imeOptions="actionDone"
-                android:inputType="textCapSentences"
-                android:maxLines="1" />
-
             <Button
                 android:id="@+id/continue1"
                 android:layout_width="match_parent"
@@ -154,6 +146,6 @@
 
         </LinearLayout>
 
-    </ScrollView>
+
 
 </LinearLayout>

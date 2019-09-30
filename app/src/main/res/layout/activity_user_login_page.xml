@@ -36,7 +36,7 @@
 
         <EditText
 
-            android:inputType="number"
+            android:inputType="phone"
             android:background="@drawable/home_right_left_flat"
             android:hint="Phone number  (01_ _ _ _ _ _ _ _ _)"
             android:textAlignment="center"

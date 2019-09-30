@@ -2,11 +2,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/tool_notification"
-        android:icon="@drawable/notification_avail"
+    
+
+  <item
+        android:id="@+id/tool_hide"
         android:orderInCategory="100"
-        app:showAsAction="always"
-        android:title="Notification" />
+        app:showAsAction="never"
+        android:title="Show/hide Informations" />
+
+    <item
+        android:id="@+id/tool_edit"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="Edit Informations" />
+
+    <item
+        android:id="@+id/tool_change"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="Change Contact" />
+
+
 
 </menu>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:paddingBottom="40dp"
+        android:paddingTop="0dp"
+        android:orientation="vertical"
+        android:layout_weight="4"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+            android:text="Admin for Taranga 12:15 down"
+            android:textAlignment="center"
+            android:textColor="@color/button"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/emailText"/>
+
+
+        <EditText
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:digits=" ,.:;'!()[]{}-_+=/\|*%?#^0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            android:textAlignment="center"
+            android:hint="Stoppage name"
+            android:background="@drawable/home_right_left_flat"
+            android:layout_gravity="center"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:id="@+id/mpasswordText"/>
+        <EditText
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:digits=" ,.:;'!()[]{}-_+=/\|*%?#^0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            android:textAlignment="center"
+            android:hint="Stoppage description"
+            android:background="@drawable/home_right_left_flat"
+            android:layout_gravity="center"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:id="@+id/opasswordText"/>
+
+        <Button
+            android:layout_marginTop="30dp"
+            android:id="@+id/mlogButton"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:background="@drawable/signbutton_back"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="CONTINUE"/>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

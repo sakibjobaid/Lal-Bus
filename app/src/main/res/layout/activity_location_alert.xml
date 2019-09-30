@@ -7,10 +7,10 @@
     android:orientation="vertical"
     tools:context=".LocationAlertActivity">
     <ImageView
-        android:layout_weight="4"
+        android:layout_weight="0"
         android:src="@drawable/final_alarm2"
         android:layout_width="wrap_content"
-        android:layout_height="0dp" />
+        android:layout_height="400dp" />
 
     <Button
         android:layout_marginBottom="60dp"
@@ -19,7 +19,7 @@
         android:layout_marginLeft="20dp"
         android:id="@+id/StopAlarm"
         android:background="@drawable/signbutton_back"
-        android:layout_width="match_parent"
+        android:layout_width="225dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"

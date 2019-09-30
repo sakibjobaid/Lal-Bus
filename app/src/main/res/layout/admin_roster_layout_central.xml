@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="350dp"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:layout_height="400dp"
+    tools:context=".AdminOptions">
+
+
+
+    <LinearLayout
+
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:text="Select Bus :"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:ignore="Suspicious0dp" />
+
+            <Spinner
+                android:id="@+id/busSpinner22"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/spinner_round"
+                android:textAlignment="center"
+                android:textSize="18sp">
+
+            </Spinner>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:text="Select Time :"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:ignore="Suspicious0dp" />
+
+            <Spinner
+                android:id="@+id/timeSpinner22"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/spinner_round"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                tools:ignore="Suspicious0dp">
+
+
+            </Spinner>
+
+
+        </LinearLayout>
+
+
+
+
+
+
+        <Button
+            android:id="@+id/view22"
+            android:layout_width="142dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@color/black"
+            android:text="View Roster"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/delete22"
+            android:layout_width="142dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:background="@color/black"
+            android:text="Delete "
+            android:textColor="@color/white" />
+
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>
